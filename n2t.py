@@ -4,10 +4,8 @@ import pymorphy2
 
 units = (
     u'ноль',
-
     (u'один', u'одна'),
     (u'два', u'две'),
-
     u'три', u'четыре', u'пять',
     u'шесть', u'семь', u'восемь', u'девять'
 )
@@ -107,9 +105,7 @@ def num2text(num, main_units=((u'', u'', u''), 'm')):
     return ' '.join(name).strip()
 
 
-def decimal2text(value, places=2,
-                 int_units=(('', '', ''), 'm'),
-                 exp_units=(('', '', ''), 'm')):
+def decimal2text(value, places=2, int_units=(('', '', ''), 'm'), exp_units=(('', '', ''), 'm')):
     value = decimal.Decimal(value)
     q = decimal.Decimal(10) ** -places
 
@@ -117,27 +113,27 @@ def decimal2text(value, places=2,
     return u'{} {}'.format(
         num2text(int(integral), int_units),
         num2text(int(exp), exp_units))
-
+  
 def get_number_and_noun(numeral, noun):
     morph = pymorphy2.MorphAnalyzer()
     word = morph.parse(noun)[0]
     v1, v2, v3 = word.inflect({'sing', 'nomn'}), word.inflect({'gent'}), word.inflect({'plur', 'gent'})
-    return num2text(num=numeral, main_units=((v1.word, v2.word, v3.word), 'm'))
- 
-if len(sys.argv) > 1:
-        try:
-            num = sys.argv[1]
-            if '.' in num:
-                print(decimal2text(
-                    decimal.Decimal(num),
-                    int_units=((u'штука', u'штуки', u'штук'), 'f'),
-                    exp_units=((u'кусок', u'куска', u'кусков'), 'm')))
-            else:
-                print(num2text(
-                    int(num),
-                    main_units=((u'штука', u'штуки', u'штук'), 'f')))
-        except ValueError:
-            print (sys.stderr, "Error: Invalid argument {}".format(sys.argv[1]))
-        sys.exit() 
-result = get_number_and_noun(52, 'рубль')  
-print(result)
+    try:
+        if '.' in numeral:
+            print(decimal2text(decimal.Decimal(numeral),int_units=((v1.word, v2.word, v3.word), 'm'),exp_units=((v1.word, v2.word, v3.word), 'm')))
+        else:
+           print(num2text(int(numeral),main_units=((v1.word, v2.word, v3.word), 'm')))
+    except ValueError:
+        return (sys.stderr, "Error: Invalid argument {}".format(numeral))
+    sys.exit() 
+    
+    
+#return num2text(num=numeral, main_units=((v1.word, v2.word, v3.word), 'm'))
+
+print("Input your number")
+inpt_num = input()
+print("Input your noun")
+inpt_str = input()
+get_number_and_noun(inpt_num, inpt_str)  
+#print(result)
+
