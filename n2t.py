@@ -105,7 +105,7 @@ def num2text(num, main_units=((u'', u'', u''), 'm')):
     return ' '.join(name).strip()
 
 
-def decimal2text(value, places=2, int_units=(('', '', ''), 'm'), exp_units=(('', '', ''), 'm')):
+def decimal2text(value, places=2, int_units=(('', '', ''), 'f'), exp_units=(('', '', ''), 'm')):
     value = decimal.Decimal(value)
     q = decimal.Decimal(10) ** -places
 
@@ -116,24 +116,27 @@ def decimal2text(value, places=2, int_units=(('', '', ''), 'm'), exp_units=(('',
   
 def get_number_and_noun(numeral, noun):
     morph = pymorphy2.MorphAnalyzer()
-    word = morph.parse(noun)[0]
-    v1, v2, v3 = word.inflect({'sing', 'nomn'}), word.inflect({'gent'}), word.inflect({'plur', 'gent'})
+    elem = morph.parse(noun)[0]
+    print(elem)
+    v1, v2, v3 = elem.inflect({'sing', 'nomn'}), elem.inflect({'gent'}), elem.inflect({'plur', 'gent'})
     try:
         if '.' in numeral:
-            print('The result is ------ ',decimal2text(decimal.Decimal(numeral),int_units=((v1.word, v2.word, v3.word), 'm'),exp_units=((v1.word, v2.word, v3.word), 'm')))
+            print('qqq1')
+            nmrl = int(numeral)
+            print(nmrl)
+            print('The result is ------ ',decimal2text(decimal.Decimal(numeral),
+            int_units=((elem.make_agree_with_number(nmrl).word, elem.make_agree_with_number(nmrl).word, elem.make_agree_with_number(nmrl).word), 'f'),
+            exp_units=((elem.make_agree_with_number(nmrl).word, elem.make_agree_with_number(nmrl).word, elem.make_agree_with_number(nmrl).word), 'm')))
         else:
            print('The result is ------ ',num2text(int(numeral),main_units=((v1.word, v2.word, v3.word), 'm')))
     except ValueError:
         print ('Error: Invalid argument ')
     sys.exit() 
-    
-    
-#return num2text(num=numeral, main_units=((v1.word, v2.word, v3.word), 'm'))
 
 print("Input your number")
 inpt_num = input()
 print("Input your noun")
 inpt_str = input()
 get_number_and_noun(inpt_num, inpt_str)  
-#print(result)
 
+#elem.make_agree_with_number(numeral)
