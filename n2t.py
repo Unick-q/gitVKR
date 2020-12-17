@@ -120,11 +120,11 @@ def get_number_and_noun(numeral, noun):
     v1, v2, v3 = word.inflect({'sing', 'nomn'}), word.inflect({'gent'}), word.inflect({'plur', 'gent'})
     try:
         if '.' in numeral:
-            print(decimal2text(decimal.Decimal(numeral),int_units=((v1.word, v2.word, v3.word), 'm'),exp_units=((v1.word, v2.word, v3.word), 'm')))
+            print('The result is ------ ',decimal2text(decimal.Decimal(numeral),int_units=((v1.word, v2.word, v3.word), 'm'),exp_units=((v1.word, v2.word, v3.word), 'm')))
         else:
-           print(num2text(int(numeral),main_units=((v1.word, v2.word, v3.word), 'm')))
+           print('The result is ------ ',num2text(int(numeral),main_units=((v1.word, v2.word, v3.word), 'm')))
     except ValueError:
-        return (sys.stderr, "Error: Invalid argument {}".format(numeral))
+        print ('Error: Invalid argument ')
     sys.exit() 
     
     
