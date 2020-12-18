@@ -41,13 +41,10 @@ orders = (# plural forms and gender
     ((u'миллиард', u'миллиарда', u'миллиардов'), 'm'),
 )
 
-male_units = ((u'рубль', u'рубля', u'рублей'), 'm')
-female_units = ((u'копейка', u'копейки', u'копеек'), 'f')
-
 minus = u'минус'
 
-def thousand(rest, sex):
-    """Converts numbers from 19 to 999"""
+def convert(rest, sex):
+    "Converts numbers from 19 to 999"
     prev = 0
     plural = 2
     name = []
@@ -80,11 +77,8 @@ def thousand(rest, sex):
     return plural, name
 
 
-def num2text(num, main_units=((u'', u'', u''), 'm')):
-    """
-    http://ru.wikipedia.org/wiki/Gettext#.D0.9C.D0.BD.D0.BE.D0.B6.D0.B5.D1.81.\
-    D1.82.D0.B2.D0.B5.D0.BD.D0.BD.D1.8B.D0.B5_.D1.87.D0.B8.D1.81.D0.BB.D0.B0_2
-    """
+def int_num2text(num, main_units=((u'', u'', u''), 'm')):
+    "Converts int numbers to text"
     _orders = (main_units,) + orders
     if num == 0:
         return ' '.join((units[0], _orders[0][0][2])).strip() # ноль
@@ -93,7 +87,7 @@ def num2text(num, main_units=((u'', u'', u''), 'm')):
     ord = 0
     name = []
     while rest > 0:
-        plural, nme = thousand(rest % 1000, _orders[ord][1])
+        plural, nme = convert(rest % 1000, _orders[ord][1])
         if nme or ord == 0:
             name.append(_orders[ord][0][plural])
         name += nme
@@ -105,14 +99,15 @@ def num2text(num, main_units=((u'', u'', u''), 'm')):
     return ' '.join(name).strip()
 
 
-def decimal2text(value, places=2, int_units=(('', '', ''), 'f'), exp_units=(('', '', ''), 'm')):
+def float_num2text(value, places=2, int_units=(('', '', ''), 'f'), exp_units=(('', '', ''), 'm')):
+    "Converts float numbers to text"
     value = decimal.Decimal(value)
     q = decimal.Decimal(10) ** -places
 
     integral, exp = str(value.quantize(q)).split('.')
     return u'{} {}'.format(
-        num2text(int(integral), int_units),
-        num2text(int(exp), exp_units))
+        int_num2text(int(integral), int_units),
+        int_num2text(int(exp), exp_units))
   
 def get_number_and_noun(numeral, noun):
     morph = pymorphy2.MorphAnalyzer()
@@ -120,9 +115,9 @@ def get_number_and_noun(numeral, noun):
     value_num = decimal.Decimal(numeral)
     l = decimal.Decimal(10) ** -2
     f_part, s_part = str(value_num.quantize(l)).split('.')
-    print(f_part) #5
-    print(elem.make_agree_with_number(f_part)) #????? Не выдаёт числительное в правильном падеже
-    print(s_part) #50
+    #print(f_part) #5
+    #print(elem.make_agree_with_number(f_part)) #????? Не выдаёт числительное в правильном падеже
+    #print(s_part) #50
     #nmrl = int(numeral)
     #print('qqq1')
     #print(nmrl)
@@ -130,11 +125,11 @@ def get_number_and_noun(numeral, noun):
     v1, v2, v3 = elem.inflect({'sing', 'nomn'}), elem.inflect({'gent'}), elem.inflect({'plur', 'gent'})
     try:
         if '.' in numeral:
-            print('The result is ------ ',decimal2text(decimal.Decimal(numeral),
+            print('The result is ------ ',float_num2text(decimal.Decimal(numeral),
             int_units=((elem.make_agree_with_number(f_part), elem.make_agree_with_number(f_part), elem.make_agree_with_number(f_part)), 'f'),
             exp_units=((elem.make_agree_with_number(s_part), elem.make_agree_with_number(s_part), elem.make_agree_with_number(s_part)), 'm')))
         else:
-           print('The result is ------ ',num2text(int(numeral),main_units=((v1.word, v2.word, v3.word), 'm')))
+           print('The result is ------ ',int_num2text(int(numeral),main_units=((v1.word, v2.word, v3.word), 'm')))
     except ValueError:
         print ('Error: Invalid argument ')
     sys.exit() 
