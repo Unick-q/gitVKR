@@ -117,16 +117,17 @@ def decimal2text(value, places=2, int_units=(('', '', ''), 'f'), exp_units=(('',
 def get_number_and_noun(numeral, noun):
     morph = pymorphy2.MorphAnalyzer()
     elem = morph.parse(noun)[0]
-    print(elem)
+    #nmrl = int(numeral)
+    #print('qqq1')
+    #print(nmrl)
+    #print(elem.make_agree_with_number(nmrl))
     v1, v2, v3 = elem.inflect({'sing', 'nomn'}), elem.inflect({'gent'}), elem.inflect({'plur', 'gent'})
     try:
         if '.' in numeral:
-            print('qqq1')
             nmrl = int(numeral)
-            print(nmrl)
-            print('The result is ------ ',decimal2text(decimal.Decimal(numeral),
-            int_units=((elem.make_agree_with_number(nmrl).word, elem.make_agree_with_number(nmrl).word, elem.make_agree_with_number(nmrl).word), 'f'),
-            exp_units=((elem.make_agree_with_number(nmrl).word, elem.make_agree_with_number(nmrl).word, elem.make_agree_with_number(nmrl).word), 'm')))
+            print('The result is ------ ',decimal2text5(decimal.Decimal(numeral),
+            int_units=((elem.make_agree_with_number(numeral), elem.make_agree_with_number(numeral), elem.make_agree_with_number(numeral)), 'f'),
+            exp_units=((elem.make_agree_with_number(numeral), elem.make_agree_with_number(numeral), elem.make_agree_with_number(numeral)), 'm')))
         else:
            print('The result is ------ ',num2text(int(numeral),main_units=((v1.word, v2.word, v3.word), 'm')))
     except ValueError:
