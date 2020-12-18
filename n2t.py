@@ -117,6 +117,12 @@ def decimal2text(value, places=2, int_units=(('', '', ''), 'f'), exp_units=(('',
 def get_number_and_noun(numeral, noun):
     morph = pymorphy2.MorphAnalyzer()
     elem = morph.parse(noun)[0]
+    value_num = decimal.Decimal(numeral)
+    l = decimal.Decimal(10) ** -2
+    f_part, s_part = str(value_num.quantize(l)).split('.')
+    print(f_part) #5
+    print(elem.make_agree_with_number(f_part)) #????? Не выдаёт числительное в правильном падеже
+    print(s_part) #50
     #nmrl = int(numeral)
     #print('qqq1')
     #print(nmrl)
@@ -124,10 +130,9 @@ def get_number_and_noun(numeral, noun):
     v1, v2, v3 = elem.inflect({'sing', 'nomn'}), elem.inflect({'gent'}), elem.inflect({'plur', 'gent'})
     try:
         if '.' in numeral:
-            nmrl = int(numeral)
-            print('The result is ------ ',decimal2text5(decimal.Decimal(numeral),
-            int_units=((elem.make_agree_with_number(numeral), elem.make_agree_with_number(numeral), elem.make_agree_with_number(numeral)), 'f'),
-            exp_units=((elem.make_agree_with_number(numeral), elem.make_agree_with_number(numeral), elem.make_agree_with_number(numeral)), 'm')))
+            print('The result is ------ ',decimal2text(decimal.Decimal(numeral),
+            int_units=((elem.make_agree_with_number(f_part), elem.make_agree_with_number(f_part), elem.make_agree_with_number(f_part)), 'f'),
+            exp_units=((elem.make_agree_with_number(s_part), elem.make_agree_with_number(s_part), elem.make_agree_with_number(s_part)), 'm')))
         else:
            print('The result is ------ ',num2text(int(numeral),main_units=((v1.word, v2.word, v3.word), 'm')))
     except ValueError:
