@@ -55,12 +55,10 @@ hundreds = (
     u'девятьсот'
 )
 
-ukr_units = (
-    u'ноль',
-    (u'', u''),
-    (u'',u''),
-    u'',u'',u'',
-    u'',u'',u''
+ukr_hundreds = (
+    u'сто', u'двісті', u'триста',
+    u'чотириста',u"п'ятсот", u'шістсот',
+    u'сімсот',u'вісімсот', u"дев'ятсот",
 )
 
 orders = (# plural forms and gender
@@ -70,15 +68,14 @@ orders = (# plural forms and gender
     ((u'миллиард', u'миллиарда', u'миллиардов'), 'm'),
 )
 
-ukr_units = (
-    u'ноль',
-    (u'', u''),
-    (u'',u''),
-    u'',u'',u'',
-    u'',u'',u''
+ukr_orders = (
+    ((u'тисяча', u'тисячі', u'тисяч'), 'f'),
+    ((u'мільйон', u'мільйона', u'мільйонів'), 'm'),
+    ((u'мільярд', u'мільярда', u'мільярдів'), 'm'),
 )
-
 minus = u'минус'
+
+ukr_minus = u'мінус'
 
 def convert(rest, sex):
     "Converts numbers from 19 to 999"
