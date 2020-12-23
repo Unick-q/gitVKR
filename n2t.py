@@ -1,6 +1,7 @@
 import decimal
 import sys
 import pymorphy2
+from googletrans import Translator
 
 units = (
     u'ноль',
@@ -145,7 +146,9 @@ def float_num2text(value, places=2, int_units=(('', '', ''), 'f'), exp_units=(('
   
 def get_number_and_noun(numeral, noun):
     morph = pymorphy2.MorphAnalyzer()
+    translator = Translator()
     elem = morph.parse(noun)[0]
+    ##############################
     value_num = decimal.Decimal(numeral)
     l = decimal.Decimal(10) ** -2
     f_part, s_part = str(value_num.quantize(l)).split('.')
@@ -157,6 +160,7 @@ def get_number_and_noun(numeral, noun):
     #print(nmrl)
     #print(elem.make_agree_with_number(nmrl))
     v1, v2, v3 = elem.inflect({'sing', 'nomn'}), elem.inflect({'gent'}), elem.inflect({'plur', 'gent'})
+    uv1, uv2, uv3 = elem.inflect({'sing', 'nomn'}), elem.inflect({'plur', 'nomn'}), elem.inflect({'plur', 'gent'})
     try:
         if '.' in numeral:
             print('The result is ------ ',float_num2text(decimal.Decimal(numeral),
@@ -164,14 +168,39 @@ def get_number_and_noun(numeral, noun):
             exp_units=((elem.make_agree_with_number(s_part), elem.make_agree_with_number(s_part), elem.make_agree_with_number(s_part)), 'm')))
         else:
            print('The result is ------ ',int_num2text(int(numeral),main_units=((v1.word, v2.word, v3.word), 'm')))
+        #else:
+        #   print('The result is ------ ',int_num2text(int(numeral),main_units=((uv1.word, uv2.word, uv3.word), 'm', 1)))
     except ValueError:
-        print ('Error: Invalid argument ')
+        print ('Error: Invalid argument!')
     sys.exit() 
+
+
 
 print("Input your number")
 inpt_num = input()
+print("Input what lang you want to write")
+print(" 0 -- Russian ")
+print(" 1 -- Ukranian ")
+write_lang = bool(input())
+if (write_lang != 1) & (write_lang != 0):
+    print ('Error: Invalid argument!') 
+    sys.exit()
+print("Input what lang you want to read")
+print(" 0 -- Russian ")
+print(" 1 -- Ukranian ")
+read_lang = bool(input())
+if (read_lang != 1) & (read_lang != 0):
+    print ('Error: Invalid argument!') 
+    sys.exit()
 print("Input your noun")
-inpt_str = input()
-get_number_and_noun(inpt_num, inpt_str)  
+inpt_str = str(input())
+
+translator = Translator()
+strres = get_number_and_noun(inpt_num, inpt_str)  
+result = translator.translate(strres, src='ru', dest='uk')
+print(result)
+print(result.src)
+print(result.dest)
+print(result.text)
 
 #elem.make_agree_with_number(numeral)
