@@ -3,6 +3,8 @@ import sys
 import pymorphy2
 from googletrans import Translator
 
+morph = pymorphy2.MorphAnalyzer()
+
 units = (
     u'ноль',
     (u'один', u'одна'),
@@ -74,8 +76,8 @@ ukr_orders = (
     ((u'мільйон', u'мільйона', u'мільйонів'), 'm'),
     ((u'мільярд', u'мільярда', u'мільярдів'), 'm'),
 )
-minus = u'минус'
 
+minus = u'минус'
 ukr_minus = u'мінус'
 
 def convert(rest, sex):
@@ -146,7 +148,6 @@ def float_num2text(value, places=2, int_units=(('', '', ''), 'f'), exp_units=(('
   
 def get_number_and_noun(numeral, noun):
     morph = pymorphy2.MorphAnalyzer()
-    translator = Translator()
     elem = morph.parse(noun)[0]
     ##############################
     value_num = decimal.Decimal(numeral)
@@ -167,7 +168,7 @@ def get_number_and_noun(numeral, noun):
             int_units=((elem.make_agree_with_number(f_part), elem.make_agree_with_number(f_part), elem.make_agree_with_number(f_part)), 'f'),
             exp_units=((elem.make_agree_with_number(s_part), elem.make_agree_with_number(s_part), elem.make_agree_with_number(s_part)), 'm')))
         else:
-           print('The result is ------ ',int_num2text(int(numeral),main_units=((v1.word, v2.word, v3.word), 'm')))
+           return(int_num2text(int(numeral),main_units=((v1.word, v2.word, v3.word), 'm')))
         #else:
         #   print('The result is ------ ',int_num2text(int(numeral),main_units=((uv1.word, uv2.word, uv3.word), 'm', 1)))
     except ValueError:
@@ -178,29 +179,15 @@ def get_number_and_noun(numeral, noun):
 
 print("Input your number")
 inpt_num = input()
-print("Input what lang you want to write")
-print(" 0 -- Russian ")
-print(" 1 -- Ukranian ")
-write_lang = bool(input())
-if (write_lang != 1) & (write_lang != 0):
-    print ('Error: Invalid argument!') 
-    sys.exit()
-print("Input what lang you want to read")
-print(" 0 -- Russian ")
-print(" 1 -- Ukranian ")
-read_lang = bool(input())
-if (read_lang != 1) & (read_lang != 0):
-    print ('Error: Invalid argument!') 
-    sys.exit()
 print("Input your noun")
 inpt_str = str(input())
 
 translator = Translator()
-strres = get_number_and_noun(inpt_num, inpt_str)  
-result = translator.translate(strres, src='ru', dest='uk')
-print(result)
-print(result.src)
-print(result.dest)
-print(result.text)
+str_res = get_number_and_noun(inpt_num, morph.parse(inpt_str)[0].normal_form)  
+print('The result is ------ ',str_res)
+#result = translator.translate(' "str_res" ', src='ru', dest='uk')
+#print('The result is ------ ', result)
+print(morph.parse('мячи')[0].normal_form)
+
 
 #elem.make_agree_with_number(numeral)

@@ -11,3 +11,18 @@ result = get_number_and_noun(52, 'рубль')
 print(male_units)
 print(female_units)
 print(result)
+
+print("Input what lang you want to write")
+print(" 0 -- Russian ")
+print(" 1 -- Ukranian ")
+write_lang = bool(input())
+if (write_lang != 1) & (write_lang != 0):
+    print ('Error: Invalid argument!') 
+    sys.exit()
+print("Input what lang you want to read")
+print(" 0 -- Russian ")
+print(" 1 -- Ukranian ")
+read_lang = bool(input())
+if (read_lang != 1) & (read_lang != 0):
+    print ('Error: Invalid argument!') 
+    sys.exit()
