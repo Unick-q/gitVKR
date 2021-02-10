@@ -1,24 +1,18 @@
+# -*- coding: utf-8 -*-
 import decimal
 import sys
 import pymorphy2
-from googletrans import Translator
+
+morph = pymorphy2.MorphAnalyzer()
 
 morph = pymorphy2.MorphAnalyzer()
 
 units = (
     u'ноль',
-    (u'один', u'одна'),
+    (u'один', u'одна', u'одно'),
     (u'два', u'две'),
     u'три', u'четыре', u'пять',
     u'шесть', u'семь', u'восемь', u'девять'
-)
-
-ukr_units = (
-    u'ноль',
-    (u'один', u'одна'),
-    (u'два', u'дві'),
-    u'три', u'чотири', u"п'ять",
-    u'шість', u'сім', u'вісім', u"дев'ять"
 )
 
 teens = (
@@ -29,25 +23,12 @@ teens = (
     u'восемнадцать', u'девятнадцать'
 )
 
-ukr_teens = (
-    u'десять', u'одинадцять', u'дванадцять',
-    u'тринадцять',u'чотирнадцять', u"п'ятнадцять",
-    u'шістнадцять',u'сімнадцять', u'вісімнадцять',
-    u"дев'ятнадцять"
-)
-
 tens = (
     teens,
     u'двадцать', u'тридцать',
     u'сорок', u'пятьдесят',
     u'шестьдесят', u'семьдесят',
     u'восемьдесят', u'девяносто'
-)
-
-ukr_tens = (
-    u'двадцять', u'тридцять', u'cорок',
-    u"п'ятдесят",u'шістдесят', u'сімдесят',
-    u'вісімдесят',u"дев'яносто"
 )
 
 hundreds = (
@@ -58,12 +39,6 @@ hundreds = (
     u'девятьсот'
 )
 
-ukr_hundreds = (
-    u'сто', u'двісті', u'триста',
-    u'чотириста',u"п'ятсот", u'шістсот',
-    u'сімсот',u'вісімсот', u"дев'ятсот",
-)
-
 orders = (# plural forms and gender
     #((u'', u'', u''), 'm'), 
     ((u'тысяча', u'тысячи', u'тысяч'), 'f'),
@@ -71,11 +46,14 @@ orders = (# plural forms and gender
     ((u'миллиард', u'миллиарда', u'миллиардов'), 'm'),
 )
 
+<<<<<<< HEAD
+=======
 ukr_orders = (
     ((u'тисяча', u'тисячі', u'тисяч'), 'f'),
     ((u'мільйон', u'мільйона', u'мільйонів'), 'm'),
     ((u'мільярд', u'мільярда', u'мільярдів'), 'm'),
 )
+>>>>>>> 6f99ccb23e931538472bcc7344739d9230c4a2b1
 
 minus = u'минус'
 ukr_minus = u'мінус'
@@ -145,30 +123,39 @@ def float_num2text(value, places=2, int_units=(('', '', ''), 'f'), exp_units=(('
     return u'{} {}'.format(
         int_num2text(int(integral), int_units),
         int_num2text(int(exp), exp_units))
+
+# def make_unicode(input):
+#     if type(input) != unicode:
+#         input =  input.decode('utf-8')
+#         return input
+#     else:
+#         return input
   
 def get_number_and_noun(numeral, noun):
     morph = pymorphy2.MorphAnalyzer()
     elem = morph.parse(noun)[0]
     ##############################
-    value_num = decimal.Decimal(numeral)
-    l = decimal.Decimal(10) ** -2
-    f_part, s_part = str(value_num.quantize(l)).split('.')
-    #print(f_part) #5
-    #print(elem.make_agree_with_number(f_part)) #????? Не выдаёт числительное в правильном падеже
-    #print(s_part) #50
-    #nmrl = int(numeral)
-    #print('qqq1')
-    #print(nmrl)
-    #print(elem.make_agree_with_number(nmrl))
+    # value_num = decimal.Decimal(numeral)
+    # l = decimal.Decimal(10) ** -2
+    # f_part, s_part = str(value_num.quantize(l)).split('.')
     v1, v2, v3 = elem.inflect({'sing', 'nomn'}), elem.inflect({'gent'}), elem.inflect({'plur', 'gent'})
-    uv1, uv2, uv3 = elem.inflect({'sing', 'nomn'}), elem.inflect({'plur', 'nomn'}), elem.inflect({'plur', 'gent'})
+    #uv1, uv2, uv3 = elem.inflect({'sing', 'nomn'}), elem.inflect({'plur', 'nomn'}), elem.inflect({'plur', 'gent'})
     try:
+<<<<<<< HEAD
+        # if '.' in numeral:
+        #     print('The result is ------ ',float_num2text(decimal.Decimal(numeral),
+        #     int_units=((elem.make_agree_with_number(f_part), elem.make_agree_with_number(f_part), elem.make_agree_with_number(f_part)), 'f'),
+        #     exp_units=((elem.make_agree_with_number(s_part), elem.make_agree_with_number(s_part), elem.make_agree_with_number(s_part)), 'm')))
+        # else:
+           return int_num2text(int(numeral),main_units=((v1.word, v2.word, v3.word), 'm'))
+=======
         if '.' in numeral:
             print('The result is ------ ',float_num2text(decimal.Decimal(numeral),
             int_units=((elem.make_agree_with_number(f_part), elem.make_agree_with_number(f_part), elem.make_agree_with_number(f_part)), 'f'),
             exp_units=((elem.make_agree_with_number(s_part), elem.make_agree_with_number(s_part), elem.make_agree_with_number(s_part)), 'm')))
         else:
            return(int_num2text(int(numeral),main_units=((v1.word, v2.word, v3.word), 'm')))
+>>>>>>> 6f99ccb23e931538472bcc7344739d9230c4a2b1
         #else:
         #   print('The result is ------ ',int_num2text(int(numeral),main_units=((uv1.word, uv2.word, uv3.word), 'm', 1)))
     except ValueError:
@@ -176,18 +163,27 @@ def get_number_and_noun(numeral, noun):
     sys.exit() 
 
 
+# butyavka = morph.parse('семь')[0]
+# print('\n',butyavka.inflect({'gent'}))
 
 print("Input your number")
 inpt_num = input()
 print("Input your noun")
 inpt_str = str(input())
 
+<<<<<<< HEAD
+str_res = get_number_and_noun(inpt_num, morph.parse(inpt_str)[0].normal_form)  
+print('The result is ------ ',str_res)
+
+# print(morph.parse('пользователи')[0].normal_form)
+=======
 translator = Translator()
 str_res = get_number_and_noun(inpt_num, morph.parse(inpt_str)[0].normal_form)  
 print('The result is ------ ',str_res)
 #result = translator.translate(' "str_res" ', src='ru', dest='uk')
 #print('The result is ------ ', result)
 print(morph.parse('мячи')[0].normal_form)
+>>>>>>> 6f99ccb23e931538472bcc7344739d9230c4a2b1
 
 
 #elem.make_agree_with_number(numeral)
