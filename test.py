@@ -1,6 +1,49 @@
+# print(noun_res)
+# cardinal_num, inpt_str = map(str, )
+# b = list(map(str, cardinal_num, inpt_str))
+# print(p.type_num(int(elem)))
+
+# type_num(inpt_num) массив тысяч 
+# morph.parse(numchunks.index('один') + 1)[0].tag.gender род тысячи 
+
+# print(p.end_way(p.type_num(inpt_num),p.corr_num(cardinal_num),inpt_num))
+# print(p.end_way(p.type_num(inpt_num),p.corr_num(ordinal_num),inpt_num))
+
+# print(p.cor_card_num(p.end_wayp.cor_card_num(p.type_num(inpt_num),cardinal_num,inpt_num)))
+# print(p.cor_ord_num(p.end_way(p.type_num(inpt_num),ordinal_num,inpt_num)))
+
+# print(cardinal_num)
+# print(ordinal_num)
+# print(p.end_way(p.type_num(inpt_num),cardinal_num,inpt_num).index('один'))
+
+# test_1 = morph.parse('две')[0].tag.number 
+# test_2 = morph.parse('две')[0].tag.case 
+# test_3 = morph.parse('две')[0].tag.gender 
+# one = morph.parse('два')[0]
+# print(test_1)
+# print(test_2)
+# print(test_3)
+# test = one.inflect({'femn',test_1,test_2})
+# print(test)
+# one = morph.parse('двухсот')[0].inflect({"accs", "neut"})
+# two = one.word
+# print(one)
+# print(two)
+# print(morph.parse('два')[0].inflect({'femn','accs'}).word)
+# result = re.sub(r'тысяча',morph.parse('тысяча')[0].make_agree_with_number(1234).word, cardinal_num)
+# print(result)
+# morph.parse('двухсот')[0]
+
+# parsed_word = morph.parse('третий')[0].normal_form
+# print(parsed_word)
+# one_form = morph.parse(parsed_word)[0]
+# print(one_form)
+# norm_form = parsed_word.inflect({"nomn", "masc"}).word
+
+
+
 
 import pymorphy2
-<<<<<<< HEAD
 
 morph = pymorphy2.MorphAnalyzer()
 # Prompt user for input
@@ -24,20 +67,20 @@ while(not word == "exit"):
         print("Они " + parsed_word.inflect({"past", "plur"}).word)
     elif(parsed_word.tag.__contains__("NOUN")):
         # We don't need to worry about gender of declentions with nouns.
-        print("Gender: " + parsed_word.tag.gender)
-        print("Given form (most likely): " + parsed_word.tag.case)
+        # print("Gender: " + parsed_word.tag.gender)
+        # print("Given form (most likely): " + parsed_word.tag.case)
         print("Nominative:    " + parsed_word.inflect({"nomn"}).word)
-        print(" Plural: " + parsed_word.inflect({"nomn", "plur"}).word)
-        print("Prepositional: " + parsed_word.inflect({"loct"}).word)
-        print(" Plural: " + parsed_word.inflect({"loct", "plur"}).word)
-        print("Accusative:    " + parsed_word.inflect({"accs"}).word)
-        print(" Plural: " + parsed_word.inflect({"accs", "plur"}).word)
+        # print(" Plural: " + parsed_word.inflect({"nomn", "plur"}).word)
         print("Genitive:      " + parsed_word.inflect({"gent"}).word)
-        print(" Plural: " + parsed_word.inflect({"gent", "plur"}).word)
-        print("Instrumental:  " + parsed_word.inflect({"ablt"}).word)
-        print(" Plural: " + parsed_word.inflect({"ablt", "plur"}).word)
+        # print(" Plural: " + parsed_word.inflect({"loct", "plur"}).word)
         print("Dative:        " + parsed_word.inflect({"datv"}).word)
-        print(" Plural: " + parsed_word.inflect({"datv", "plur"}).word)
+        # print(" Plural: " + parsed_word.inflect({"accs", "plur"}).word)
+        print("Accusative:    " + parsed_word.inflect({"accs"}).word)
+        # print(" Plural: " + parsed_word.inflect({"gent", "plur"}).word)
+        print("Instrumental:  " + parsed_word.inflect({"ablt"}).word)
+        # print(" Plural: " + parsed_word.inflect({"ablt", "plur"}).word)
+        print("Prepositional: " + parsed_word.inflect({"loct"}).word)
+        # print(" Plural: " + parsed_word.inflect({"datv", "plur"}).word)
     elif(parsed_word.tag.__contains__("ADJF")):
         print("Gender: " + parsed_word.tag.gender)
         print("Given form (most likely): " + parsed_word.tag.case)
@@ -53,32 +96,20 @@ while(not word == "exit"):
         print(" Plural: " + parsed_word.inflect({"ablt", "plur"}).word)
         print("Dative:        " + parsed_word.inflect({"datv", "masc"}).word + " / " + parsed_word.inflect({"datv", "femn"}).word + " / " + parsed_word.inflect({"datv", "neut"}).word)
         print(" Plural: " + parsed_word.inflect({"datv", "plur"}).word)
+    # else:
+    #     print("Gender: " + parsed_word.tag.gender)
+    #     print("Given form (most likely): " + parsed_word.tag.case)
+    #     print("Nominative:    " + parsed_word.inflect({"nomn", "masc"}).word + " / " + parsed_word.inflect({"nomn", "femn"}).word + " / " + parsed_word.inflect({"nomn", "neut"}).word)
+    #     print(" Plural: " + parsed_word.inflect({"nomn", "plur"}).word)
+    #     print("Prepositional: " + parsed_word.inflect({"loct", "masc"}).word + " / " + parsed_word.inflect({"loct", "femn"}).word + " / " + parsed_word.inflect({"loct", "neut"}).word)
+    #     print(" Plural: " + parsed_word.inflect({"loct", "plur"}).word)
+    #     print("Accusative:    " + parsed_word.inflect({"accs", "masc"}).word + " / " + parsed_word.inflect({"accs", "femn"}).word + " / " + parsed_word.inflect({"accs", "neut"}).word)
+    #     print(" Plural: " + parsed_word.inflect({"accs", "plur"}).word)
+    #     print("Genitive:      " + parsed_word.inflect({"gent", "masc"}).word + " / " + parsed_word.inflect({"gent", "femn"}).word + " / " + parsed_word.inflect({"gent", "neut"}).word)
+    #     print(" Plural: " + parsed_word.inflect({"accs", "plur"}).word)
+    #     print("Instrumental:  " + parsed_word.inflect({"ablt", "masc"}).word + " / " + parsed_word.inflect({"ablt", "femn"}).word + " / " + parsed_word.inflect({"ablt", "neut"}).word)
+    #     print(" Plural: " + parsed_word.inflect({"ablt", "plur"}).word)
+    #     print("Dative:        " + parsed_word.inflect({"datv", "masc"}).word + " / " + parsed_word.inflect({"datv", "femn"}).word + " / " + parsed_word.inflect({"datv", "neut"}).word)
+    #     print(" Plural: " + parsed_word.inflect({"datv", "plur"}).word)
     word = input("Word: ")
-=======
- 
-def get_number_and_noun(numeral, noun):
-    morph = pymorphy2.MorphAnalyzer()
-    word = morph.parse(noun)[0]
-    v1, v2, v3 = word.inflect({'sing', 'nomn'}), word.inflect({'gent'}), word.inflect({'plur', 'gent'})
-    return num2text(num=numeral, main_units=((v1.word, v2.word, v3.word), 'm'))
- 
-result = get_number_and_noun(52, 'рубль')  
-print(male_units)
-print(female_units)
-print(result)
 
-print("Input what lang you want to write")
-print(" 0 -- Russian ")
-print(" 1 -- Ukranian ")
-write_lang = bool(input())
-if (write_lang != 1) & (write_lang != 0):
-    print ('Error: Invalid argument!') 
-    sys.exit()
-print("Input what lang you want to read")
-print(" 0 -- Russian ")
-print(" 1 -- Ukranian ")
-read_lang = bool(input())
-if (read_lang != 1) & (read_lang != 0):
-    print ('Error: Invalid argument!') 
-    sys.exit()
->>>>>>> 6f99ccb23e931538472bcc7344739d9230c4a2b1
