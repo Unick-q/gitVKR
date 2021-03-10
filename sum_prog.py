@@ -543,27 +543,6 @@ class engine:
             total = " ".join((result, noun.normal_form))
         else:
             total = endstr
-        
-        
-        # if 'femn' in noun.tag:
-        #     olo[len(olo) - 1] = last.inflect({'femn','sing','nomn'}).word
-        #     result = "{}".format(" ".join(olo))
-        #     total = " ".join((result, noun.normal_form))
-        # elif 'masc' in noun.tag:
-        #     olo[len(olo) - 1] = last.inflect({'masc','sing','nomn'}).word
-        #     result = "{}".format(" ".join(olo))
-        #     total = " ".join((result, noun.normal_form))
-        # elif 'neut' in noun.tag:
-        #     olo[len(olo) - 1] = last.inflect({'neut','sing','nomn'}).word
-        #     result = "{}".format(" ".join(olo))
-        #     total = " ".join((result, noun.normal_form))
-        # elif 'Pltm' in noun.tag:
-        #     olo[len(olo) - 1] = last.inflect({'plur','nomn'}).word
-        #     result = "{}".format(" ".join(olo))
-        #     total = " ".join((result, noun.normal_form))
-        # else:
-        #     total = endstr
-
         return total
     
     def correct_card_num(self, num, endstr, noun): #собирательные и количественные 
@@ -638,10 +617,7 @@ print("Количественное числительное + сущ.: " + p.co
 print("Порядковое числительное + сущ.: " + p.correct_ord_noun(num_2,noun_ord_res,inpt_num))
 num_1_noun = p.correct_card_num(inpt_num,num_1,inpt_str)
 num_2_noun = p.correct_ord_noun(num_2,noun_ord_res,inpt_num)
-# print("|--------------------------------------|")
-# print(" Склонение существительного по падежам: ")
-# print("|--------------------------------------|")
-# # print("Gender: " + noun.tag.gender)
+
 print("|--------------------------------------|")
 print("   Склонение числительного по падежам:  ")
 print("|--------------------------------------|")
