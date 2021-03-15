@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-# -*- test-case-name: pytils.test.test_numeral -*-
 """
 Plural forms and in-word representation for numerals.
 """
@@ -102,17 +100,6 @@ NEUTER = 3  #: sex - neuter
 
 
 def _get_float_remainder(fvalue, signs=9):
-    """
-    Get remainder of float, i.e. 2.05 -> '05'
-    @param fvalue: input value
-    @type fvalue: C{integer types}, C{float} or C{Decimal}
-    @param signs: maximum number of signs
-    @type signs: C{integer types}
-    @return: remainder
-    @rtype: C{str}
-    @raise ValueError: fvalue is negative
-    @raise ValueError: signs overflow
-    """
     check_positive(fvalue)
     if isinstance(fvalue, int):
         return "0"
@@ -146,20 +133,7 @@ def _get_float_remainder(fvalue, signs=9):
     return remainder
 
 
-def choose_plural(amount, variants):
-    """
-    Choose proper case depending on amount
-    @param amount: amount of objects
-    @type amount: C{integer types}
-    @param variants: variants (forms) of object in such form:
-        (1 object, 2 objects, 5 objects).
-    @type variants: 3-element C{sequence} of C{unicode}
-        or C{unicode} (three variants with delimeter ',')
-    @return: proper variant
-    @rtype: C{unicode}
-    @raise ValueError: variants' length lesser than 3
-    """
-    
+def choose_plural(amount, variants): 
     if isinstance(variants, str):
         variants = split_values(variants)
     check_length(variants, 3)
@@ -177,19 +151,6 @@ def choose_plural(amount, variants):
 
 
 def get_plural(amount, variants, absence=None):
-    """
-    Get proper case with value
-    @param amount: amount of objects
-    @type amount: C{integer types}
-    @param variants: variants (forms) of object in such form:
-        (1 object, 2 objects, 5 objects).
-    @type variants: 3-element C{sequence} of C{unicode}
-        or C{unicode} (three variants with delimeter ',')
-    @param absence: if amount is zero will return it
-    @type absence: C{unicode}
-    @return: amount with proper variant
-    @rtype: C{unicode}
-    """
     if amount or absence is None:
         return u"%d %s" % (amount, choose_plural(amount, variants))
     else:
@@ -197,18 +158,6 @@ def get_plural(amount, variants, absence=None):
 
 
 def _get_plural_legacy(amount, extra_variants):
-    """
-    Get proper case with value (legacy variant, without absence)
-    @param amount: amount of objects
-    @type amount: C{integer types}
-    @param variants: variants (forms) of object in such form:
-        (1 object, 2 objects, 5 objects, 0-object variant).
-        0-object variant is similar to C{absence} in C{get_plural}
-    @type variants: 3-element C{sequence} of C{unicode}
-        or C{unicode} (three variants with delimeter ',')
-    @return: amount with proper variant
-    @rtype: C{unicode}
-    """
     absence = None
     if isinstance(extra_variants, str):
         extra_variants = split_values(extra_variants)
@@ -221,16 +170,6 @@ def _get_plural_legacy(amount, extra_variants):
 
 
 def rubles(amount, zero_for_kopeck=False):
-    """
-    Get string for money
-    @param amount: amount of money
-    @type amount: C{integer types}, C{float} or C{Decimal}
-    @param zero_for_kopeck: If false, then zero kopecks ignored
-    @type zero_for_kopeck: C{bool}
-    @return: in-words representation of money's amount
-    @rtype: C{unicode}
-    @raise ValueError: amount is negative
-    """
     check_positive(amount)
 
     pts = []
@@ -248,31 +187,7 @@ def rubles(amount, zero_for_kopeck=False):
 
     return u" ".join(pts)
 
-
-# def in_words_int(amount, gender=MALE):
-#     """
-#     Integer in words
-#     @param amount: numeral
-#     @type amount: C{integer types}
-#     @param gender: gender (MALE, FEMALE or NEUTER)
-#     @type gender: C{int}
-#     @return: in-words reprsentation of numeral
-#     @rtype: C{unicode}
-#     @raise ValueError: amount is negative
-#     """
-#     check_positive(amount)
-
-#     return sum_string(amount, gender)
-
 def in_words_float(amount, _gender=FEMALE):
-    """
-    Float in words
-    @param amount: float numeral
-    @type amount: C{float} or C{Decimal}
-    @return: in-words reprsentation of float numeral
-    @rtype: C{unicode}
-    @raise ValueError: when ammount is negative
-    """
     check_positive(amount)
 
     pts = []
@@ -288,16 +203,6 @@ def in_words_float(amount, _gender=FEMALE):
 
 
 def in_words(amount, gender=None):
-    """
-    Numeral in words
-    @param amount: numeral
-    @type amount: C{integer types}, C{float} or C{Decimal}
-    @param gender: gender (MALE, FEMALE or NEUTER)
-    @type gender: C{int}
-    @return: in-words reprsentation of numeral
-    @rtype: C{unicode}
-    raise ValueError: when amount is negative
-    """
     check_positive(amount)
     if isinstance(amount, Decimal) and amount.as_tuple()[2] == 0:
         # если целое,
@@ -323,22 +228,6 @@ def in_words(amount, gender=None):
 
 
 def sum_string(amount, gender, items=None):
-    """
-    Get sum in words
-    @param amount: amount of objects
-    @type amount: C{integer types}
-    @param gender: gender of object (MALE, FEMALE or NEUTER)
-    @type gender: C{int}
-    @param items: variants of object in three forms:
-        for one object, for two objects and for five objects
-    @type items: 3-element C{sequence} of C{unicode} or
-        just C{unicode} (three variants with delimeter ',')
-    @return: in-words representation objects' amount
-    @rtype: C{unicode}
-    @raise ValueError: items isn't 3-element C{sequence} or C{unicode}
-    @raise ValueError: amount bigger than 10**11
-    @raise ValueError: amount is negative
-    """
     if isinstance(items, str):
         items = split_values(items)
     if items is None:
@@ -378,20 +267,6 @@ def sum_string(amount, gender, items=None):
 
 
 def _sum_string_fn(into, tmp_val, gender, items=None):
-    """
-    Make in-words representation of single order
-    @param into: in-words representation of lower orders
-    @type into: C{unicode}
-    @param tmp_val: temporary value without lower orders
-    @type tmp_val: C{integer types}
-    @param gender: gender (MALE, FEMALE or NEUTER)
-    @type gender: C{int}
-    @param items: variants of objects
-    @type items: 3-element C{sequence} of C{unicode}
-    @return: new into and tmp_val
-    @rtype: C{tuple}
-    @raise ValueError: tmp_val is negative
-    """
     if items is None:
         items = (u"", u"", u"")
     one_item, two_items, five_items = items

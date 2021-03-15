@@ -1,7 +1,8 @@
 import ast
 import re
 import pymorphy2
-from test import in_words
+from float_nums import in_words
+from float_nums import rubles
 from typing import Dict, Union
 
 morph = pymorphy2.MorphAnalyzer()
@@ -676,7 +677,6 @@ if 'Pltm' not in noun.tag:
 # result = " ".join((num_1, plur_3_inf))
 # print(result)
 # (self, noun, endstr, typeinf)
-print(num_1)
 print("|--------------------------------------|")
 print("   Склонение дробного числительного по падежам:  ")
 print("|--------------------------------------|")
