@@ -1,115 +1,446 @@
-# print(noun_res)
-# cardinal_num, inpt_str = map(str, )
-# b = list(map(str, cardinal_num, inpt_str))
-# print(p.type_num(int(elem)))
+# -*- coding: utf-8 -*-
+# -*- test-case-name: pytils.test.test_numeral -*-
+"""
+Plural forms and in-word representation for numerals.
+"""
+from __future__ import division
+from decimal import Decimal
 
-# type_num(inpt_num) массив тысяч 
-# morph.parse(numchunks.index('один') + 1)[0].tag.gender род тысячи 
-
-# print(p.end_way(p.type_num(inpt_num),p.corr_num(cardinal_num),inpt_num))
-# print(p.end_way(p.type_num(inpt_num),p.corr_num(ordinal_num),inpt_num))
-
-# print(p.cor_card_num(p.end_wayp.cor_card_num(p.type_num(inpt_num),cardinal_num,inpt_num)))
-# print(p.cor_ord_num(p.end_way(p.type_num(inpt_num),ordinal_num,inpt_num)))
-
-# print(cardinal_num)
-# print(ordinal_num)
-# print(p.end_way(p.type_num(inpt_num),cardinal_num,inpt_num).index('один'))
-
-# test_1 = morph.parse('две')[0].tag.number 
-# test_2 = morph.parse('две')[0].tag.case 
-# test_3 = morph.parse('две')[0].tag.gender 
-# one = morph.parse('два')[0]
-# print(test_1)
-# print(test_2)
-# print(test_3)
-# test = one.inflect({'femn',test_1,test_2})
-# print(test)
-# one = morph.parse('двухсот')[0].inflect({"accs", "neut"})
-# two = one.word
-# print(one)
-# print(two)
-# print(morph.parse('два')[0].inflect({'femn','accs'}).word)
-# result = re.sub(r'тысяча',morph.parse('тысяча')[0].make_agree_with_number(1234).word, cardinal_num)
-# print(result)
-# morph.parse('двухсот')[0]
-
-# parsed_word = morph.parse('третий')[0].normal_form
-# print(parsed_word)
-# one_form = morph.parse(parsed_word)[0]
-# print(one_form)
-# norm_form = parsed_word.inflect({"nomn", "masc"}).word
+def check_length(value, length):
+    """
+    Checks length of value
+    @param value: value to check
+    @type value: C{str}
+    @param length: length checking for
+    @type length: C{int}
+    @return: None when check successful
+    @raise ValueError: check failed
+    """
+    _length = len(value)
+    if _length != length:
+        raise ValueError("length must be %d, not %d" % \
+                         (length, _length))
 
 
+def check_positive(value, strict=False):
+    """
+    Checks if variable is positive
+    @param value: value to check
+    @type value: C{integer types}, C{float} or C{Decimal}
+    @return: None when check successful
+    @raise ValueError: check failed
+    """
+    if not strict and value < 0:
+        raise ValueError("Value must be positive or zero, not %s" % str(value))
+    if strict and value <= 0:
+        raise ValueError("Value must be positive, not %s" % str(value))
 
 
-import pymorphy2
+def split_values(ustring, sep=u','):
+    """
+    Splits unicode string with separator C{sep},
+    but skips escaped separator.
+    
+    @param ustring: string to split
+    @type ustring: C{unicode}
+    
+    @param sep: separator (default to u',')
+    @type sep: C{unicode}
+    
+    @return: tuple of splitted elements
+    """
+    assert isinstance(ustring, str), "uvalue must be unicode, not %s" % type(ustring)
+    # unicode have special mark symbol 0xffff which cannot be used in a regular text,
+    # so we use it to mark a place where escaped column was
+    ustring_marked = ustring.replace(u'\,', u'\uffff')
+    items = tuple([i.strip().replace(u'\uffff', u',') for i in ustring_marked.split(sep)])
+    return items
 
-morph = pymorphy2.MorphAnalyzer()
-# Prompt user for input
-print("Enter a russian word. If its a verb (any form), the conjugations will be given.\nIf noun/adjective (any form, not just nominative), declentions will be printed.")
-print("Word (exit to leave): ")
-word = input()
-while(not word == "exit"):
-    parsed_word = morph.parse(word)[0]
-    # This case if for verbs, it can either be conjugated or infinitive
-    if(parsed_word.tag.__contains__("VERB") or parsed_word.tag.__contains__("INFN")):
-        # I'm so sorry that this print is going to look hideous.
-        print("Я " + parsed_word.inflect({"1per"}).word)
-        print("Ты " + parsed_word.inflect({"2per"}).word)
-        print("Он/Она " + parsed_word.inflect({"3per"}).word)
-        print("Вы " + parsed_word.inflect({"2per", "plur"}).word)
-        print("Мы " + parsed_word.inflect({"1per", "plur"}).word)
-        print("Они " + parsed_word.inflect({"3per", "plur"}).word)
-        print("Past:")
-        print("Он " + parsed_word.inflect({"past"}).word)
-        print("Она " + parsed_word.inflect({"past", "femn"}).word)
-        print("Они " + parsed_word.inflect({"past", "plur"}).word)
-    elif(parsed_word.tag.__contains__("NOUN")):
-        # We don't need to worry about gender of declentions with nouns.
-        # print("Gender: " + parsed_word.tag.gender)
-        # print("Given form (most likely): " + parsed_word.tag.case)
-        print("Nominative:    " + parsed_word.inflect({"nomn"}).word)
-        # print(" Plural: " + parsed_word.inflect({"nomn", "plur"}).word)
-        print("Genitive:      " + parsed_word.inflect({"gent"}).word)
-        # print(" Plural: " + parsed_word.inflect({"loct", "plur"}).word)
-        print("Dative:        " + parsed_word.inflect({"datv"}).word)
-        # print(" Plural: " + parsed_word.inflect({"accs", "plur"}).word)
-        print("Accusative:    " + parsed_word.inflect({"accs"}).word)
-        # print(" Plural: " + parsed_word.inflect({"gent", "plur"}).word)
-        print("Instrumental:  " + parsed_word.inflect({"ablt"}).word)
-        # print(" Plural: " + parsed_word.inflect({"ablt", "plur"}).word)
-        print("Prepositional: " + parsed_word.inflect({"loct"}).word)
-        # print(" Plural: " + parsed_word.inflect({"datv", "plur"}).word)
-    elif(parsed_word.tag.__contains__("ADJF")):
-        print("Gender: " + parsed_word.tag.gender)
-        print("Given form (most likely): " + parsed_word.tag.case)
-        print("Nominative:    " + parsed_word.inflect({"nomn", "masc"}).word + " / " + parsed_word.inflect({"nomn", "femn"}).word + " / " + parsed_word.inflect({"nomn", "neut"}).word)
-        print(" Plural: " + parsed_word.inflect({"nomn", "plur"}).word)
-        print("Prepositional: " + parsed_word.inflect({"loct", "masc"}).word + " / " + parsed_word.inflect({"loct", "femn"}).word + " / " + parsed_word.inflect({"loct", "neut"}).word)
-        print(" Plural: " + parsed_word.inflect({"loct", "plur"}).word)
-        print("Accusative:    " + parsed_word.inflect({"accs", "masc"}).word + " / " + parsed_word.inflect({"accs", "femn"}).word + " / " + parsed_word.inflect({"accs", "neut"}).word)
-        print(" Plural: " + parsed_word.inflect({"accs", "plur"}).word)
-        print("Genitive:      " + parsed_word.inflect({"gent", "masc"}).word + " / " + parsed_word.inflect({"gent", "femn"}).word + " / " + parsed_word.inflect({"gent", "neut"}).word)
-        print(" Plural: " + parsed_word.inflect({"accs", "plur"}).word)
-        print("Instrumental:  " + parsed_word.inflect({"ablt", "masc"}).word + " / " + parsed_word.inflect({"ablt", "femn"}).word + " / " + parsed_word.inflect({"ablt", "neut"}).word)
-        print(" Plural: " + parsed_word.inflect({"ablt", "plur"}).word)
-        print("Dative:        " + parsed_word.inflect({"datv", "masc"}).word + " / " + parsed_word.inflect({"datv", "femn"}).word + " / " + parsed_word.inflect({"datv", "neut"}).word)
-        print(" Plural: " + parsed_word.inflect({"datv", "plur"}).word)
-    # else:
-    #     print("Gender: " + parsed_word.tag.gender)
-    #     print("Given form (most likely): " + parsed_word.tag.case)
-    #     print("Nominative:    " + parsed_word.inflect({"nomn", "masc"}).word + " / " + parsed_word.inflect({"nomn", "femn"}).word + " / " + parsed_word.inflect({"nomn", "neut"}).word)
-    #     print(" Plural: " + parsed_word.inflect({"nomn", "plur"}).word)
-    #     print("Prepositional: " + parsed_word.inflect({"loct", "masc"}).word + " / " + parsed_word.inflect({"loct", "femn"}).word + " / " + parsed_word.inflect({"loct", "neut"}).word)
-    #     print(" Plural: " + parsed_word.inflect({"loct", "plur"}).word)
-    #     print("Accusative:    " + parsed_word.inflect({"accs", "masc"}).word + " / " + parsed_word.inflect({"accs", "femn"}).word + " / " + parsed_word.inflect({"accs", "neut"}).word)
-    #     print(" Plural: " + parsed_word.inflect({"accs", "plur"}).word)
-    #     print("Genitive:      " + parsed_word.inflect({"gent", "masc"}).word + " / " + parsed_word.inflect({"gent", "femn"}).word + " / " + parsed_word.inflect({"gent", "neut"}).word)
-    #     print(" Plural: " + parsed_word.inflect({"accs", "plur"}).word)
-    #     print("Instrumental:  " + parsed_word.inflect({"ablt", "masc"}).word + " / " + parsed_word.inflect({"ablt", "femn"}).word + " / " + parsed_word.inflect({"ablt", "neut"}).word)
-    #     print(" Plural: " + parsed_word.inflect({"ablt", "plur"}).word)
-    #     print("Dative:        " + parsed_word.inflect({"datv", "masc"}).word + " / " + parsed_word.inflect({"datv", "femn"}).word + " / " + parsed_word.inflect({"datv", "neut"}).word)
-    #     print(" Plural: " + parsed_word.inflect({"datv", "plur"}).word)
-    word = input("Word: ")
+FRACTIONS = (
+    (u"десятая", u"десятых", u"десятых"),
+    (u"сотая", u"сотых", u"сотых"),
+    (u"тысячная", u"тысячных", u"тысячных"),
+    (u"десятитысячная", u"десятитысячных", u"десятитысячных"),
+    (u"стотысячная", u"стотысячных", u"стотысячных"),
+    (u"миллионная", u"милллионных", u"милллионных"),
+    (u"десятимиллионная", u"десятимилллионных", u"десятимиллионных"),
+    (u"стомиллионная", u"стомилллионных", u"стомиллионных"),
+    (u"миллиардная", u"миллиардных", u"миллиардных"),
+    )  #: Forms (1, 2, 5) for fractions
 
+ONES = {
+    0: (u"",       u"",       u""),
+    1: (u"один",   u"одна",   u"одно"),
+    2: (u"два",    u"две",    u"два"),
+    3: (u"три",    u"три",    u"три"),
+    4: (u"четыре", u"четыре", u"четыре"),
+    5: (u"пять",   u"пять",   u"пять"),
+    6: (u"шесть",  u"шесть",  u"шесть"),
+    7: (u"семь",   u"семь",   u"семь"),
+    8: (u"восемь", u"восемь", u"восемь"),
+    9: (u"девять", u"девять", u"девять"),
+    }  #: Forms (MALE, FEMALE, NEUTER) for ones
+
+TENS = {
+    0: u"",
+    # 1 - особый случай
+    10: u"десять",11: u"одиннадцать",12: u"двенадцать",13: u"тринадцать",
+    14: u"четырнадцать",15: u"пятнадцать",16: u"шестнадцать",17: u"семнадцать",
+    18: u"восемнадцать",19: u"девятнадцать",2: u"двадцать",3: u"тридцать",4: u"сорок",
+    5: u"пятьдесят",6: u"шестьдесят",7: u"семьдесят",8: u"восемьдесят",9: u"девяносто",
+    }  #: Tens
+
+HUNDREDS = {
+    0: u"",1: u"сто",2: u"двести",3: u"триста",
+    4: u"четыреста",5: u"пятьсот",6: u"шестьсот",
+    7: u"семьсот",8: u"восемьсот",9: u"девятьсот",
+    }  #: Hundreds
+
+MALE = 1    #: sex - male
+FEMALE = 2  #: sex - female
+NEUTER = 3  #: sex - neuter
+
+
+def _get_float_remainder(fvalue, signs=9):
+    """
+    Get remainder of float, i.e. 2.05 -> '05'
+    @param fvalue: input value
+    @type fvalue: C{integer types}, C{float} or C{Decimal}
+    @param signs: maximum number of signs
+    @type signs: C{integer types}
+    @return: remainder
+    @rtype: C{str}
+    @raise ValueError: fvalue is negative
+    @raise ValueError: signs overflow
+    """
+    check_positive(fvalue)
+    if isinstance(fvalue, int):
+        return "0"
+    if isinstance(fvalue, Decimal) and fvalue.as_tuple()[2] == 0:
+        # Decimal.as_tuple() -> (sign, digit_tuple, exponent)
+        # если экспонента "0" -- значит дробной части нет
+        return "0"
+
+    signs = min(signs, len(FRACTIONS))
+
+    # нужно remainder в строке, потому что дробные X.0Y
+    # будут "ломаться" до X.Y
+    remainder = str(fvalue).split('.')[1]
+    iremainder = int(remainder)
+    orig_remainder = remainder
+    factor = len(str(remainder)) - signs
+
+    if factor > 0:
+        # после запятой цифр больше чем signs, округляем
+        iremainder = int(round(iremainder / (10.0**factor)))
+    format = "%%0%dd" % min(len(remainder), signs)
+
+    remainder = format % iremainder
+
+    if len(remainder) > signs:
+        # при округлении цифр вида 0.998 ругаться
+        raise ValueError("Signs overflow: I can't round only fractional part \
+                          of %s to fit %s in %d signs" % \
+                         (str(fvalue), orig_remainder, signs))
+
+    return remainder
+
+
+def choose_plural(amount, variants):
+    """
+    Choose proper case depending on amount
+    @param amount: amount of objects
+    @type amount: C{integer types}
+    @param variants: variants (forms) of object in such form:
+        (1 object, 2 objects, 5 objects).
+    @type variants: 3-element C{sequence} of C{unicode}
+        or C{unicode} (three variants with delimeter ',')
+    @return: proper variant
+    @rtype: C{unicode}
+    @raise ValueError: variants' length lesser than 3
+    """
+    
+    if isinstance(variants, str):
+        variants = split_values(variants)
+    check_length(variants, 3)
+    amount = abs(amount)
+    
+    if amount % 10 == 1 and amount % 100 != 11:
+        variant = 0
+    elif amount % 10 >= 2 and amount % 10 <= 4 and \
+         (amount % 100 < 10 or amount % 100 >= 20):
+        variant = 1
+    else:
+        variant = 2
+    
+    return variants[variant]
+
+
+def get_plural(amount, variants, absence=None):
+    """
+    Get proper case with value
+    @param amount: amount of objects
+    @type amount: C{integer types}
+    @param variants: variants (forms) of object in such form:
+        (1 object, 2 objects, 5 objects).
+    @type variants: 3-element C{sequence} of C{unicode}
+        or C{unicode} (three variants with delimeter ',')
+    @param absence: if amount is zero will return it
+    @type absence: C{unicode}
+    @return: amount with proper variant
+    @rtype: C{unicode}
+    """
+    if amount or absence is None:
+        return u"%d %s" % (amount, choose_plural(amount, variants))
+    else:
+        return absence
+
+
+def _get_plural_legacy(amount, extra_variants):
+    """
+    Get proper case with value (legacy variant, without absence)
+    @param amount: amount of objects
+    @type amount: C{integer types}
+    @param variants: variants (forms) of object in such form:
+        (1 object, 2 objects, 5 objects, 0-object variant).
+        0-object variant is similar to C{absence} in C{get_plural}
+    @type variants: 3-element C{sequence} of C{unicode}
+        or C{unicode} (three variants with delimeter ',')
+    @return: amount with proper variant
+    @rtype: C{unicode}
+    """
+    absence = None
+    if isinstance(extra_variants, str):
+        extra_variants = split_values(extra_variants)
+    if len(extra_variants) == 4:
+        variants = extra_variants[:3]
+        absence = extra_variants[3]
+    else:
+        variants = extra_variants
+    return get_plural(amount, variants, absence)
+
+
+def rubles(amount, zero_for_kopeck=False):
+    """
+    Get string for money
+    @param amount: amount of money
+    @type amount: C{integer types}, C{float} or C{Decimal}
+    @param zero_for_kopeck: If false, then zero kopecks ignored
+    @type zero_for_kopeck: C{bool}
+    @return: in-words representation of money's amount
+    @rtype: C{unicode}
+    @raise ValueError: amount is negative
+    """
+    check_positive(amount)
+
+    pts = []
+    amount = round(amount, 2)
+    pts.append(sum_string(int(amount), 1, (u"рубль", u"рубля", u"рублей")))
+    remainder = _get_float_remainder(amount, 2)
+    iremainder = int(remainder)
+
+    if iremainder != 0 or zero_for_kopeck:
+        # если 3.1, то это 10 копеек, а не одна
+        if iremainder < 10 and len(remainder) == 1:
+            iremainder *= 10
+        pts.append(sum_string(iremainder, 2,
+                              (u"копейка", u"копейки", u"копеек")))
+
+    return u" ".join(pts)
+
+
+# def in_words_int(amount, gender=MALE):
+#     """
+#     Integer in words
+#     @param amount: numeral
+#     @type amount: C{integer types}
+#     @param gender: gender (MALE, FEMALE or NEUTER)
+#     @type gender: C{int}
+#     @return: in-words reprsentation of numeral
+#     @rtype: C{unicode}
+#     @raise ValueError: amount is negative
+#     """
+#     check_positive(amount)
+
+#     return sum_string(amount, gender)
+
+def in_words_float(amount, _gender=FEMALE):
+    """
+    Float in words
+    @param amount: float numeral
+    @type amount: C{float} or C{Decimal}
+    @return: in-words reprsentation of float numeral
+    @rtype: C{unicode}
+    @raise ValueError: when ammount is negative
+    """
+    check_positive(amount)
+
+    pts = []
+    # преобразуем целую часть
+    pts.append(sum_string(int(amount), 2,
+                          (u"целая", u"целых", u"целых")))
+    # теперь то, что после запятой
+    remainder = _get_float_remainder(amount)
+    signs = len(str(remainder)) - 1
+    pts.append(sum_string(int(remainder), 2, FRACTIONS[signs]))
+
+    return u" ".join(pts)
+
+
+def in_words(amount, gender=None):
+    """
+    Numeral in words
+    @param amount: numeral
+    @type amount: C{integer types}, C{float} or C{Decimal}
+    @param gender: gender (MALE, FEMALE or NEUTER)
+    @type gender: C{int}
+    @return: in-words reprsentation of numeral
+    @rtype: C{unicode}
+    raise ValueError: when amount is negative
+    """
+    check_positive(amount)
+    if isinstance(amount, Decimal) and amount.as_tuple()[2] == 0:
+        # если целое,
+        # т.е. Decimal.as_tuple -> (sign, digits tuple, exponent), exponent=0
+        # то как целое
+        amount = int(amount)
+    if gender is None:
+        args = (amount,)
+    else:
+        args = (amount, gender)
+    # если целое
+    # if isinstance(amount, integer_types):
+    #     return in_words_int(*args)
+    # если дробное
+    if isinstance(amount, (float, Decimal)):
+        return in_words_float(*args)
+    # ни float, ни int, ни Decimal
+    else:
+        # до сюда не должно дойти
+        raise TypeError(
+            "amount should be number type (float), got %s"
+            % type(amount))
+
+
+def sum_string(amount, gender, items=None):
+    """
+    Get sum in words
+    @param amount: amount of objects
+    @type amount: C{integer types}
+    @param gender: gender of object (MALE, FEMALE or NEUTER)
+    @type gender: C{int}
+    @param items: variants of object in three forms:
+        for one object, for two objects and for five objects
+    @type items: 3-element C{sequence} of C{unicode} or
+        just C{unicode} (three variants with delimeter ',')
+    @return: in-words representation objects' amount
+    @rtype: C{unicode}
+    @raise ValueError: items isn't 3-element C{sequence} or C{unicode}
+    @raise ValueError: amount bigger than 10**11
+    @raise ValueError: amount is negative
+    """
+    if isinstance(items, str):
+        items = split_values(items)
+    if items is None:
+        items = (u"", u"", u"")
+
+    try:
+        one_item, two_items, five_items = items
+    except ValueError:
+        raise ValueError("Items must be 3-element sequence")
+
+    check_positive(amount)
+
+    if amount == 0:
+        if five_items:
+            return u"ноль %s" % five_items
+        else:
+            return u"ноль"
+
+    into = u''
+    tmp_val = amount
+
+    # единицы
+    into, tmp_val = _sum_string_fn(into, tmp_val, gender, items)
+    # тысячи
+    into, tmp_val = _sum_string_fn(into, tmp_val, FEMALE,
+                                    (u"тысяча", u"тысячи", u"тысяч"))
+    # миллионы
+    into, tmp_val = _sum_string_fn(into, tmp_val, MALE,
+                                    (u"миллион", u"миллиона", u"миллионов"))
+    # миллиарды
+    into, tmp_val = _sum_string_fn(into, tmp_val, MALE,
+                                    (u"миллиард", u"миллиарда", u"миллиардов"))
+    if tmp_val == 0:
+        return into
+    else:
+        raise ValueError("Cannot operand with numbers bigger than 10**11")
+
+
+def _sum_string_fn(into, tmp_val, gender, items=None):
+    """
+    Make in-words representation of single order
+    @param into: in-words representation of lower orders
+    @type into: C{unicode}
+    @param tmp_val: temporary value without lower orders
+    @type tmp_val: C{integer types}
+    @param gender: gender (MALE, FEMALE or NEUTER)
+    @type gender: C{int}
+    @param items: variants of objects
+    @type items: 3-element C{sequence} of C{unicode}
+    @return: new into and tmp_val
+    @rtype: C{tuple}
+    @raise ValueError: tmp_val is negative
+    """
+    if items is None:
+        items = (u"", u"", u"")
+    one_item, two_items, five_items = items
+    
+    check_positive(tmp_val)
+
+    if tmp_val == 0:
+        return into, tmp_val
+
+    words = []
+
+    rest = tmp_val % 1000
+    tmp_val = tmp_val // 1000
+    if rest == 0:
+        # последние три знака нулевые
+        if into == u"":
+            into = u"%s " % five_items
+        return into, tmp_val
+
+    # начинаем подсчет с rest
+    end_word = five_items
+
+    # сотни
+    words.append(HUNDREDS[rest // 100])
+
+    # десятки
+    rest = rest % 100
+    rest1 = rest // 10
+    # особый случай -- tens=1
+    tens = rest1 == 1 and TENS[rest] or TENS[rest1]
+    words.append(tens)
+
+    # единицы
+    if rest1 < 1 or rest1 > 1:
+        amount = rest % 10
+        end_word = choose_plural(amount, items)
+        words.append(ONES[amount][gender-1])
+    words.append(end_word)
+
+    # добавляем то, что уже было
+    words.append(into)
+
+    # убираем пустые подстроки
+    words = filter(lambda x: len(x) > 0, words)
+
+    # склеиваем и отдаем
+    return u" ".join(words).strip(), tmp_val
+
+
+
+# print(in_words(12.567))
+# print(in_words(5.30000))

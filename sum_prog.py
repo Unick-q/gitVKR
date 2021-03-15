@@ -1,6 +1,7 @@
 import ast
 import re
 import pymorphy2
+from test import in_words
 from typing import Dict, Union
 
 morph = pymorphy2.MorphAnalyzer()
@@ -42,6 +43,7 @@ to_inflect = ["gent","datv","accs","ablt","loct"]
 unit = ["", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять"]
 unit_cardinal = ["", "одна", "две", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять"]
 unit_coll = ["", "двое", "трое", "четверо", "пятеро", "шестеро", "семеро", "восьмеро", "девятеро", "десятеро"]
+fractions = ["десятый","сотый","тысячная","десятитысячный","стотысячный","милллионный","десятимилллионный","стомилллионный","миллиардный"]
 
 teen = [
     "десять",
@@ -283,7 +285,7 @@ class engine:
         andword="",
         zero="ноль",
         one="один",
-        decimal="точка",
+        decimal="целых",
         threshold=None,
     ):
         """
@@ -387,9 +389,9 @@ class engine:
                 numchunks[-1] = re.sub(r"ь","",numchunks[-1])
                 numchunks[-1] += "ый"
 
-        # for chunk in chunks[1:]:
-        #     numchunks.append(decimal)
-        #     numchunks.extend(chunk.split("%s " % comma))
+        for chunk in chunks[1:]:
+            numchunks.append(decimal)
+            numchunks.extend(chunk.split("%s " % comma))
 
         if finalpoint:
             numchunks.append(decimal)
@@ -500,7 +502,12 @@ class engine:
                     else: 
                         pup[x] = morph.parse(pup[x])[0].inflect({"accs",gen}).word
                 elif num % 10 in [2,3,4]:
-                    pup[x] = morph.parse(pup[x])[0].inflect({"nomn",gen}).word       
+                    if 'Pltm' in noun_res.tag:
+                        num %= 10 
+                        if pup[len(pup)-1] == unit[num]: 
+                            pup[len(pup)-1] = unit_coll[num-1]
+                    else:
+                        pup[x] = morph.parse(pup[x])[0].inflect({"nomn"}).word       
                 else:
                     a = pup[x]
                     for i in range(1,6):
@@ -513,7 +520,10 @@ class engine:
                 if num % 10 == 1:
                     noun_res = noun_res.inflect({"sing","accs"}).word #совпадает с именнительым падежом 
                 elif num % 10 in [2,3,4]:
-                    noun_res = noun_res.inflect({"sing","gent"}).word
+                    if 'Pltm' in noun_res.tag:
+                        noun_res = noun_res.inflect({"gent"}).word
+                    else:
+                        noun_res = noun_res.inflect({"sing","gent"}).word
                 else:
                     noun_res = noun_res.inflect({"plur","gent"}).word
             else:
@@ -521,11 +531,40 @@ class engine:
                     noun_res = noun_res.inflect({typeinf,"sing"}).word
                     pup[x] = morph.parse(pup[x])[0].inflect({typeinf,gen}).word
                 else:
+                    if pup[x] == 'сто':
+                        pup[x] = 'ста'
+                    else:
+                        pup[x] = morph.parse(pup[x])[0].inflect({typeinf}).word
                     noun_res = noun_res.inflect({typeinf,"plur"}).word
-                    pup[x] = morph.parse(pup[x])[0].inflect({typeinf}).word
             result = "{}".format(" ".join(pup))
             total = " ".join((result, noun_res))
         return total
+    
+    # def inflect_apro_noun(self, noun, apro):
+
+    def inflect_float_num_noun(self, noun, endstr, typeinf):
+        result = []
+        tyt = re.split(" ",endstr)
+        if endstr == 'одна целая пять десятых':
+            tyt = 'полтора'
+            noun_res = morph.parse(noun)[0]
+            gen = noun_res.tag.gender 
+            tyt = morph.parse(tyt)[0].inflect({typeinf}).word
+            tyt = morph.parse(tyt)[0].inflect({gen}).word
+            noun_res = noun_res.inflect({"gent"}).word
+            float_noun = " ".join((tyt, noun_res))
+        else:
+            for x in range(len(tyt)):  #Добавить полтора и т.д
+                noun_res = morph.parse(noun)[0]
+                if ('accs' in typeinf) and (tyt[x] == 'десятых'): 
+                    tyt[x] = 'десятых'
+                else:
+                    tyt[x] = morph.parse(tyt[x])[0].inflect({typeinf}).word
+                noun_res = noun_res.inflect({"gent"}).word
+                result = "{}".format(" ".join(tyt))
+                float_noun = " ".join((result, noun_res))
+        return float_noun
+
     
     def correct_ord_noun(self, endstr, noun, num): #порядковое числительное 
         noun = morph.parse(noun)[0]
@@ -580,9 +619,18 @@ print("|--------------------------------------|")
 print("               Введите число            ")
 print("|--------------------------------------|")
 elem = input()
-inpt_num = int(elem)
-cardinal_num = p.number_to_words(inpt_num) #количественные
-ordinal_num = p.number_to_words(p.ordinal(inpt_num)) #порядковые
+if '.' in elem: # дробные значения
+    print(in_words(float(elem)))
+    num_1 = in_words(float(elem))
+    # inpt_num = elem
+    # float_num = p.number_to_words(inpt_num)
+    # print(float_num)
+else:
+    int_num = int(elem)
+    cardinal_num = p.number_to_words(int_num) #количественные
+    ordinal_num = p.number_to_words(p.ordinal(int_num)) #порядковые
+    num_1 = (p.end_way(p.type_num(int_num),p.corr_num(cardinal_num),int_num)) #количественные 
+    num_2 = (p.end_way(p.type_num(int_num),p.corr_num(ordinal_num),int_num)) #порядковые
 
 # ordinal_num = p.number_to_words(123456, group=1)
 # ordinal_num = p.number_to_words(1234, wantlist=True)
@@ -609,20 +657,31 @@ noun_ord_res = noun.normal_form
 if 'Pltm' not in noun.tag:
     noun_ord_res = noun.inflect({'sing'}).word
 # 'Pltm' in noun.tag
-num_1 = (p.end_way(p.type_num(inpt_num),p.corr_num(cardinal_num),inpt_num))
-num_2 = (p.end_way(p.type_num(inpt_num),p.corr_num(ordinal_num),inpt_num))
 
-print("|--------------------------------------|")
-print("Количественное числительное + сущ.: " + p.correct_card_num(inpt_num,num_1,inpt_str)) 
-print("Порядковое числительное + сущ.: " + p.correct_ord_noun(num_2,noun_ord_res,inpt_num))
-num_1_noun = p.correct_card_num(inpt_num,num_1,inpt_str)
-num_2_noun = p.correct_ord_noun(num_2,noun_ord_res,inpt_num)
+# print("|--------------------------------------|")
+# print("Количественное числительное + сущ.: " + p.correct_card_num(int_num,num_1,inpt_str)) 
+# print("Порядковое числительное + сущ.: " + p.correct_ord_noun(num_2,noun_ord_res,int_num))
+# num_1_noun = p.correct_card_num(int_num,num_1,inpt_str)
+# num_2_noun = p.correct_ord_noun(num_2,noun_ord_res,int_num)
 
+# print("|--------------------------------------|")
+# print("   Склонение числительного по падежам:  ")
+# print("|--------------------------------------|")
+# for x in range(0, 5):
+#     inf = (p.inflect_num_noun(num_1,noun_ord_res,to_inflect[x],int_num))
+#     print(to_inflect[x] + " : " + inf)
+# print("|--------------------------------------|")
+# gent_mode = noun.inflect('gent').word
+
+# result = " ".join((num_1, plur_3_inf))
+# print(result)
+# (self, noun, endstr, typeinf)
+print(num_1)
 print("|--------------------------------------|")
-print("   Склонение числительного по падежам:  ")
+print("   Склонение дробного числительного по падежам:  ")
 print("|--------------------------------------|")
 for x in range(0, 5):
-    inf = (p.inflect_num_noun(num_1,noun_ord_res,to_inflect[x],inpt_num))
+    inf = (p.inflect_float_num_noun(noun_ord_res,num_1,to_inflect[x]))
     print(to_inflect[x] + " : " + inf)
 print("|--------------------------------------|")
 
