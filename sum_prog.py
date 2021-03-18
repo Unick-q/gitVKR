@@ -615,23 +615,55 @@ class engine:
 
 
 
+
 p = engine()
 print("|--------------------------------------|")
 print("               Введите число            ")
 print("|--------------------------------------|")
 elem = input()
+print("|--------------------------------------|")
+print("         Введите существительное        ")
+print("|--------------------------------------|")
+inpt_str = input()
+noun = morph.parse(inpt_str)[0]
+noun_ord_res = noun.normal_form
+if 'Pltm' not in noun.tag:
+    noun_ord_res = noun.inflect({'sing'}).word
 if '.' in elem: # дробные значения
-    print(in_words(float(elem)))
     num_1 = in_words(float(elem))
-    # inpt_num = elem
-    # float_num = p.number_to_words(inpt_num)
-    # print(float_num)
+    print("|--------------------------------------|")
+    print("           Значение в рублях:           ")
+    print("|--------------------------------------|")
+    print(rubles(float(elem)))
+    print("|--------------------------------------|")
+    print("   Склонение дробного числительного по падежам:  ")
+    print("|--------------------------------------|")
+    for x in range(0, 5):
+        inf = (p.inflect_float_num_noun(noun_ord_res,num_1,to_inflect[x]))
+        print(to_inflect[x] + " : " + inf)
+    print("|--------------------------------------|")
 else:
     int_num = int(elem)
     cardinal_num = p.number_to_words(int_num) #количественные
     ordinal_num = p.number_to_words(p.ordinal(int_num)) #порядковые
     num_1 = (p.end_way(p.type_num(int_num),p.corr_num(cardinal_num),int_num)) #количественные 
     num_2 = (p.end_way(p.type_num(int_num),p.corr_num(ordinal_num),int_num)) #порядковые
+    print("|--------------------------------------|")
+    print("Количественное числительное + сущ.: " + p.correct_card_num(int_num,num_1,inpt_str)) 
+    print("Порядковое числительное + сущ.: " + p.correct_ord_noun(num_2,noun_ord_res,int_num))
+    num_1_noun = p.correct_card_num(int_num,num_1,inpt_str)
+    num_2_noun = p.correct_ord_noun(num_2,noun_ord_res,int_num)
+
+    print("|--------------------------------------|")
+    print("   Склонение числительного по падежам:  ")
+    print("|--------------------------------------|")
+    for x in range(0, 5):
+        inf = (p.inflect_num_noun(num_1,noun_ord_res,to_inflect[x],int_num))
+        print(to_inflect[x] + " : " + inf)
+    print("|--------------------------------------|")
+
+
+
 
 # ordinal_num = p.number_to_words(123456, group=1)
 # ordinal_num = p.number_to_words(1234, wantlist=True)
@@ -644,44 +676,4 @@ else:
 # ordinal_num = p.number_to_words(1000, threshold=10)  # "1,000"
 # print(ordinal_num)
 # print(p.ordinal(cardinal_num))
-
-print("|--------------------------------------|")
-print("         Введите существительное        ")
-print("|--------------------------------------|")
-inpt_str = input()
-noun = morph.parse(inpt_str)[0]
-# noun_res = noun.make_agree_with_number(inpt_num).word # уйти от этого, если не может поставить то выдает ошибку 
-# print(morph.parse(noun)[0])
-print(noun)
-noun_ord_res = noun.normal_form
-# noun_ord_res = noun.inflect({'nomn'}).word
-if 'Pltm' not in noun.tag:
-    noun_ord_res = noun.inflect({'sing'}).word
-# 'Pltm' in noun.tag
-
-# print("|--------------------------------------|")
-# print("Количественное числительное + сущ.: " + p.correct_card_num(int_num,num_1,inpt_str)) 
-# print("Порядковое числительное + сущ.: " + p.correct_ord_noun(num_2,noun_ord_res,int_num))
-# num_1_noun = p.correct_card_num(int_num,num_1,inpt_str)
-# num_2_noun = p.correct_ord_noun(num_2,noun_ord_res,int_num)
-
-# print("|--------------------------------------|")
-# print("   Склонение числительного по падежам:  ")
-# print("|--------------------------------------|")
-# for x in range(0, 5):
-#     inf = (p.inflect_num_noun(num_1,noun_ord_res,to_inflect[x],int_num))
-#     print(to_inflect[x] + " : " + inf)
-# print("|--------------------------------------|")
-# gent_mode = noun.inflect('gent').word
-
-# result = " ".join((num_1, plur_3_inf))
-# print(result)
-# (self, noun, endstr, typeinf)
-print("|--------------------------------------|")
-print("   Склонение дробного числительного по падежам:  ")
-print("|--------------------------------------|")
-for x in range(0, 5):
-    inf = (p.inflect_float_num_noun(noun_ord_res,num_1,to_inflect[x]))
-    print(to_inflect[x] + " : " + inf)
-print("|--------------------------------------|")
 
