@@ -110,6 +110,7 @@ class Example(QWidget):
         self.number = []
 
         self.insert_number = self.insert_number_line.text().replace(',', '.')
+        
 
         for arg in self.insert_number.split("."):
             self.number.append(arg)
@@ -181,6 +182,7 @@ class Example(QWidget):
 
     def convert_ru(self,number):
         """General Ru func"""
+        noun = self.insert_noun_line 
         self.exit_text.setText("")
 
 
