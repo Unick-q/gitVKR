@@ -38,10 +38,6 @@ else:
                         noun_res = x
 
 
-
-
-
-
 def inflect_num_noun(self, endstr, noun, typeinf, num): #склонение 
         result = []
         noun_res = morph.parse(noun)[0]

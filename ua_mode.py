@@ -1,11 +1,9 @@
 import sys
+# import sum_prog
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import (QWidget, QApplication, QTextEdit, QPushButton,
-                             QLabel, QGridLayout, QComboBox, QDoubleSpinBox, QLineEdit)
-# from PyQt5 import QtCore
-from PyQt5.QtCore import (QRegExp)
-# from PyQt5 import QtGui
-from PyQt5.QtGui import (QRegExpValidator)
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 
 import decimal
 import re
@@ -28,11 +26,21 @@ class Example(QWidget):
         self.validator = QRegExpValidator(QRegExp(r'\d{1,7}\.\d{1,2}'), self)
         self.insert_number_line.setValidator(self.validator)
 
+        self.insert_noun_line = QLineEdit()
+        self.validator = QRegExpValidator(QRegExp(r'\d{1,7}\.\d{1,2}'), self)
+        self.insert_noun_line.setValidator(self.validator)
+
         # language list
         self.language_title = QLabel('Language:')
+        self.number_title = QLabel('Number:')
+        self.what_number_1 = QCheckBox('Numeral')
+        self.what_number_2 = QCheckBox('Indefinite')
+        self.what_number_3 = QCheckBox('Money')
+        self.noun_title = QLabel('Noun:')
         self.language = QComboBox()
-        self.language.setFixedWidth(50)
+        self.language.setFixedWidth(70)
         self.language.addItem('En')
+        self.language.addItem('Ru')
         self.language.addItem('Ua')
 
         # exit text
@@ -47,21 +55,44 @@ class Example(QWidget):
             self.exit_text.setText("")
             self.validator = QRegExpValidator(QRegExp(r'\d{1,7}\.\d{1,2}'), self)
             self.insert_number_line.setValidator(self.validator)
+            self.insert_noun_line.setText("")
+            self.exit_text.setText("")
+            self.validator = QRegExpValidator(QRegExp(r'\d{1,7}\.\d{1,2}'), self)
+            self.insert_noun_line.setValidator(self.validator)
+        if self.language.currentText() == "Ru":
+            self.insert_number_line.setText("")
+            self.exit_text.setText("")
+            self.validator = QRegExpValidator(QRegExp(r'\d{1,7}\,\d{1,2}'), self)
+            self.insert_number_line.setValidator(self.validator)
+            self.insert_noun_line.setText("")
+            self.exit_text.setText("")
+            self.validator = QRegExpValidator(QRegExp(r'\d{1,7}\.\d{1,2}'), self)
+            self.insert_noun_line.setValidator(self.validator)
         if self.language.currentText() == "Ua":
             self.insert_number_line.setText("")
             self.exit_text.setText("")
             self.validator = QRegExpValidator(QRegExp(r'\d{1,7}\,\d{1,2}'), self)
             self.insert_number_line.setValidator(self.validator)
+            self.insert_noun_line.setText("")
+            self.exit_text.setText("")
+            self.validator = QRegExpValidator(QRegExp(r'\d{1,7}\.\d{1,2}'), self)
+            self.insert_noun_line.setValidator(self.validator)
 
     def initui(self):
 
         grid = QGridLayout()
         grid.setSpacing(10)
         # grid.addWidget(self.go_button, 2, 0)
-        grid.addWidget(self.insert_number_line, 2, 0, 1, 0)
-        grid.addWidget(self.language_title, 1, 0)
-        grid.addWidget(self.language, 1, 1)
-        grid.addWidget(self.exit_text, 3, 0, 3, 2)
+        grid.addWidget(self.language_title, 1, 0, 0 ,4)
+        grid.addWidget(self.language, 1, 1, 0 ,4)
+        grid.addWidget(self.number_title, 2, 0, 0 ,4)
+        grid.addWidget(self.insert_number_line, 2, 1, 0 ,4)
+        grid.addWidget(self.what_number_1, 3, 1)
+        grid.addWidget(self.what_number_2, 3, 2)
+        grid.addWidget(self.what_number_3, 3, 3)
+        grid.addWidget(self.noun_title, 4, 0, 0 ,4)
+        grid.addWidget(self.insert_noun_line, 4, 1, 0 ,4)
+        grid.addWidget(self.exit_text, 5, 1, 0 ,4)
         self.setLayout(grid)
 
         self.setGeometry(70, 70, 500, 300)
@@ -91,6 +122,9 @@ class Example(QWidget):
 
         if self.language.currentText() == "Ua":
             self.convert_ua(self.number)
+        
+        if self.language.currentText() == "Ru":
+            self.convert_ru(self.number)
 
         if self.language.currentText() == "En":
             self.convert_en(self.number)
@@ -144,6 +178,12 @@ class Example(QWidget):
                         self.exit_text.setText(
                             self.uah + " та " +
                             self.int_to_ua(int(number[1])) + " копійок")
+
+    def convert_ru(self,number):
+        """General Ru func"""
+        self.exit_text.setText("")
+
+
 
     def convert_en(self, number):
         """General En func"""

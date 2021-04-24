@@ -1,4 +1,5 @@
 import ast
+import sys
 import re
 import pymorphy2
 from float_nums import in_words
@@ -45,6 +46,13 @@ unit = ["", "один", "два", "три", "четыре", "пять", "шес�
 unit_cardinal = ["", "одна", "две", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять"]
 unit_coll = ["", "двое", "трое", "четверо", "пятеро", "шестеро", "семеро", "восьмеро", "девятеро", "десятеро"]
 fractions = ["десятый","сотый","тысячная","десятитысячный","стотысячный","милллионный","десятимилллионный","стомилллионный","миллиардный"]
+uncount_num = ["сколько","сколько-нибудь","сколько-то","несколько","столько","столько-то"]
+sck = ["сколько""сколька","скольку","сколько","скольком","скольке"]
+sck_nbd = ["сколько-нибудя","сколько-нибудю","сколько-нибудя","сколько-нибудём","сколько-нибуде"]
+scl_to = ["сколько-то","сколько-то","сколько-то","сколько-то","сколько-то"]
+nsck = ["нескольких","нескольким","несколько","несколькими","нескольких"]
+stck = ["столька","стольку","столько","стольком","стольке"]
+stck_to = ["столько-то","столько-то","столько-то","столько-то","столько-то"]
 
 teen = [
     "десять",
@@ -615,11 +623,23 @@ class engine:
 
 
 
-
 p = engine()
 print("|--------------------------------------|")
 print("               Введите число            ")
+print("  Если это определнное значение то - 1  ")
+print("                 Иначе - 2              ")
 print("|--------------------------------------|")
+type_num = int(input())
+if (type_num != 1) & (type_num != 2):
+    print(" Error ") 
+    sys.exit() 
+elif type_num == 1:
+    type_num = 0
+else:
+    type_num = 1
+print("|--------------------------------------|")
+print("             Введите число              ")
+print("|--------------------------------------|")  
 elem = input()
 print("|--------------------------------------|")
 print("         Введите существительное        ")
@@ -629,7 +649,7 @@ noun = morph.parse(inpt_str)[0]
 noun_ord_res = noun.normal_form
 if 'Pltm' not in noun.tag:
     noun_ord_res = noun.inflect({'sing'}).word
-if '.' in elem: # дробные значения
+if '.' in elem and type_num == 0: # дробные значения
     num_1 = in_words(float(elem))
     print("|--------------------------------------|")
     print("           Значение в рублях:           ")
@@ -642,7 +662,7 @@ if '.' in elem: # дробные значения
         inf = (p.inflect_float_num_noun(noun_ord_res,num_1,to_inflect[x]))
         print(to_inflect[x] + " : " + inf)
     print("|--------------------------------------|")
-else:
+elif type_num == 0:
     int_num = int(elem)
     cardinal_num = p.number_to_words(int_num) #количественные
     ordinal_num = p.number_to_words(p.ordinal(int_num)) #порядковые
@@ -661,6 +681,34 @@ else:
         inf = (p.inflect_num_noun(num_1,noun_ord_res,to_inflect[x],int_num))
         print(to_inflect[x] + " : " + inf)
     print("|--------------------------------------|")
+else:
+    more_num = morph.parse(elem)[0].normal_form
+    print(more_num)
+    for x in range(0, 6):
+        if uncount_num[x] == more_num:
+            for y in range(0, 5):
+                if x == 0:
+                    to_the_end = " ".join((sck[y], noun.inflect({to_inflect[y],'plur'}).word))
+                    print(to_inflect[y] + " : " + to_the_end)
+                elif x == 1:
+                    to_the_end = " ".join((sck_nbd[y], noun.inflect({to_inflect[y],'plur'}).word))
+                    print(to_inflect[y] + " : " + to_the_end)
+                elif x == 2:
+                    to_the_end = " ".join((scl_to[y], noun.inflect({to_inflect[y],'plur'}).word))
+                    print(to_inflect[y] + " : " + to_the_end)
+                elif x == 3:
+                    to_the_end = " ".join((nsck[y], noun.inflect({to_inflect[y],'plur'}).word))
+                    print(to_inflect[y] + " : " + to_the_end)
+                elif x == 4:
+                    to_the_end = " ".join((stck[y], noun.inflect({to_inflect[y],'plur'}).word))
+                    print(to_inflect[y] + " : " + to_the_end)
+                elif x == 5:
+                    to_the_end = " ".join((stck_to[y], noun.inflect({to_inflect[y],'plur'}).word))
+                    print(to_inflect[y] + " : " + to_the_end)
+                else: 
+                    print(" Error ")
+    # согласуется так же, как и количественные 
+    # print("YEs, Work")
 
 
 
