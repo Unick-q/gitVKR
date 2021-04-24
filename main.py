@@ -3,86 +3,86 @@
 # Добавить склонение порядковых числительных + слитное написание 
 # Внедрить имеющуюся программу разбора текстов на числительные 
 
-else:
-                # print(noun_res)
-                # print(pup[x])
-                # noun_res = noun_res.inflect({typeinf,"plur"}).word
-                # pup[x] = morph.parse(pup[x])[0].inflect({typeinf}).word
-                if pup[x] == 'один' and x == rang - 1: 
-                    print("Here-3") #Доходит когда уже исправили на множ число
-                    if 'NOUN' in noun_res.tag:
-                        print("Here-3.1")
-                        noun_res = noun_res.inflect({typeinf,"sing"}).word
-                        pup[x] = morph.parse(pup[x])[0].inflect({typeinf,gen}).word
-                    else:
-                        print("Here-3.2")
-                        x = morph.parse(noun_res)[0]
-                        print(x)
-                        x = x.inflect({typeinf,"sing"}).word
-                        print(x)
-                        pup[x] = morph.parse(pup[x])[0].inflect({typeinf,gen}).word
-                        noun_res = x
-                else:
-                    print("Here-4")
-                    if 'NOUN' in noun_res.tag:
-                        print("Here-4.1")
-                        noun_res = noun_res.inflect({typeinf,"plur"}).word
-                        pup[x] = morph.parse(pup[x])[0].inflect({typeinf}).word
-                    else: 
-                        print("Here-4.2")
-                        x = morph.parse(noun_res)[0]
-                        print(x)
-                        x = x.inflect({typeinf,"sing"}).word
-                        print(x)
-                        pup[x] = morph.parse(pup[x])[0].inflect({typeinf,gen}).word
-                        noun_res = x
+# else:
+#                 # print(noun_res)
+#                 # print(pup[x])
+#                 # noun_res = noun_res.inflect({typeinf,"plur"}).word
+#                 # pup[x] = morph.parse(pup[x])[0].inflect({typeinf}).word
+#                 if pup[x] == 'один' and x == rang - 1: 
+#                     print("Here-3") #Доходит когда уже исправили на множ число
+#                     if 'NOUN' in noun_res.tag:
+#                         print("Here-3.1")
+#                         noun_res = noun_res.inflect({typeinf,"sing"}).word
+#                         pup[x] = morph.parse(pup[x])[0].inflect({typeinf,gen}).word
+#                     else:
+#                         print("Here-3.2")
+#                         x = morph.parse(noun_res)[0]
+#                         print(x)
+#                         x = x.inflect({typeinf,"sing"}).word
+#                         print(x)
+#                         pup[x] = morph.parse(pup[x])[0].inflect({typeinf,gen}).word
+#                         noun_res = x
+#                 else:
+#                     print("Here-4")
+#                     if 'NOUN' in noun_res.tag:
+#                         print("Here-4.1")
+#                         noun_res = noun_res.inflect({typeinf,"plur"}).word
+#                         pup[x] = morph.parse(pup[x])[0].inflect({typeinf}).word
+#                     else: 
+#                         print("Here-4.2")
+#                         x = morph.parse(noun_res)[0]
+#                         print(x)
+#                         x = x.inflect({typeinf,"sing"}).word
+#                         print(x)
+#                         pup[x] = morph.parse(pup[x])[0].inflect({typeinf,gen}).word
+#                         noun_res = x
 
 
-def inflect_num_noun(self, endstr, noun, typeinf, num): #склонение 
-        result = []
-        noun_res = morph.parse(noun)[0]
-        print(noun_res)
-        pup = re.split(" ",endstr)
-        rang = len(pup)
-        gen = noun_res.tag.gender
-        # Полностью переделать под accs
-        for x in range(len(pup)):
-            print(noun_res)
-            if ('accs' in typeinf) and ('anim' in noun_res.tag): 
-                print("Here-1")
-                if 'masc' in noun_res.tag:
-                    pup[x] = morph.parse(pup[x])[0].inflect({"gent",'masc'}).word
-                else: 
-                    pup[x] = morph.parse(pup[x])[0].inflect({"accs",gen}).word
-                if num % 10 == 1:
-                    noun_res = noun_res.inflect({"sing","accs",gen}).word
-                elif num % 10 in [2,3,4]:
-                    noun_res = noun_res.inflect({"plur","gent"}).word
-            elif ('accs' in typeinf) and ('inan' in noun_res.tag):
-                print("Here-2")
-                if 'masc' in noun_res.tag:
-                    pup[x] = morph.parse(pup[x])[0].inflect({"nomn",'masc'}).word
-                else:
-                    pup[x] = morph.parse(pup[x])[0].inflect({"accs",gen}).word
-                if num % 10 == 1:
-                    noun_res = noun_res.inflect({"sing","accs"}).word #совпадает с именнительым падежом 
-                elif num % 10 in [2,3,4]:
-                    noun_res = noun_res.inflect({"sing","gent"}).word
-                else:
-                    noun_res = noun_res.inflect({"plur","gent"}).word
-            else:
-                print(noun_res)
-                if pup[x] == 'один' and x == rang - 1: #Доходит когда уже исправили на множ число
-                    # print("Here-3")
-                    noun_res = noun_res.inflect({typeinf,"sing"}).word
-                    pup[x] = morph.parse(pup[x])[0].inflect({typeinf,gen}).word
-                else:
-                    print("Here-4")
-                    noun_res = noun_res.inflect({typeinf,"plur"}).word
-                    pup[x] = morph.parse(pup[x])[0].inflect({typeinf}).word
-            result = "{}".format(" ".join(pup))
-            total = " ".join((result, noun_res))
-        return total
+# def inflect_num_noun(self, endstr, noun, typeinf, num): #склонение 
+#         result = []
+#         noun_res = morph.parse(noun)[0]
+#         print(noun_res)
+#         pup = re.split(" ",endstr)
+#         rang = len(pup)
+#         gen = noun_res.tag.gender
+#         # Полностью переделать под accs
+#         for x in range(len(pup)):
+#             print(noun_res)
+#             if ('accs' in typeinf) and ('anim' in noun_res.tag): 
+#                 print("Here-1")
+#                 if 'masc' in noun_res.tag:
+#                     pup[x] = morph.parse(pup[x])[0].inflect({"gent",'masc'}).word
+#                 else: 
+#                     pup[x] = morph.parse(pup[x])[0].inflect({"accs",gen}).word
+#                 if num % 10 == 1:
+#                     noun_res = noun_res.inflect({"sing","accs",gen}).word
+#                 elif num % 10 in [2,3,4]:
+#                     noun_res = noun_res.inflect({"plur","gent"}).word
+#             elif ('accs' in typeinf) and ('inan' in noun_res.tag):
+#                 print("Here-2")
+#                 if 'masc' in noun_res.tag:
+#                     pup[x] = morph.parse(pup[x])[0].inflect({"nomn",'masc'}).word
+#                 else:
+#                     pup[x] = morph.parse(pup[x])[0].inflect({"accs",gen}).word
+#                 if num % 10 == 1:
+#                     noun_res = noun_res.inflect({"sing","accs"}).word #совпадает с именнительым падежом 
+#                 elif num % 10 in [2,3,4]:
+#                     noun_res = noun_res.inflect({"sing","gent"}).word
+#                 else:
+#                     noun_res = noun_res.inflect({"plur","gent"}).word
+#             else:
+#                 print(noun_res)
+#                 if pup[x] == 'один' and x == rang - 1: #Доходит когда уже исправили на множ число
+#                     # print("Here-3")
+#                     noun_res = noun_res.inflect({typeinf,"sing"}).word
+#                     pup[x] = morph.parse(pup[x])[0].inflect({typeinf,gen}).word
+#                 else:
+#                     print("Here-4")
+#                     noun_res = noun_res.inflect({typeinf,"plur"}).word
+#                     pup[x] = morph.parse(pup[x])[0].inflect({typeinf}).word
+#             result = "{}".format(" ".join(pup))
+#             total = " ".join((result, noun_res))
+#         return total
         
 
 
