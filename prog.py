@@ -800,7 +800,7 @@ class Example(QWidget):
     def convert_ru(self):
         """General Ru func"""
         noun = self.insert_noun_line 
-        # p = engine()
+        p = Example() 
         # print("|--------------------------------------|")
         # print("               Введите число            ")
         # print("  Если это определнное значение то - 1  ")
@@ -843,8 +843,8 @@ class Example(QWidget):
             # print("|--------------------------------------|")
         # elif type_num == 0:
         int_num = int(num)
-        cardinal_num = number_to_words(int_num) #количественные
-        ordinal_num = number_to_words(ordinal(int_num)) #порядковые
+        cardinal_num = p.engine.number_to_words(int_num) #количественные
+        ordinal_num = p.engine.number_to_words(ordinal(int_num)) #порядковые
         num_1 = (end_way(type_num(int_num),corr_num(cardinal_num),int_num)) #количественные 
         num_2 = (end_way(type_num(int_num),corr_num(ordinal_num),int_num)) #порядковые
         # print("|--------------------------------------|")
