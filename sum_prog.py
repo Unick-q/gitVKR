@@ -621,91 +621,91 @@ class engine:
         total_2 = " ".join((result, noun_res))
         return total_2
 
-    def start(num, noun_str):
-        p = engine()
-# print("|--------------------------------------|")
-# print("               Введите число            ")
-# print("  Если это определнное значение то - 1  ")
-# print("                 Иначе - 2              ")
-# print("|--------------------------------------|")
-# type_num = int(input())
-# if (type_num != 1) & (type_num != 2):
-#     print(" Error ") 
-#     sys.exit() 
-# elif type_num == 1:
-#     type_num = 0
-# else:
-#     type_num = 1
-        # print("|--------------------------------------|")
-        # print("             Введите число              ")
-        # print("|--------------------------------------|")  
-        # elem = input()
-        # print("|--------------------------------------|")
-        # print("         Введите существительное        ")
-        # print("|--------------------------------------|")
-        # inpt_str = input()
-        noun = morph.parse(noun_str)[0]
-        noun_ord_res = noun.normal_form
-        if 'Pltm' not in noun.tag:
-            noun_ord_res = noun.inflect({'sing'}).word
-        if '.' in num and type_num == 0: # дробные значения
-            num_1 = in_words(float(num))
-            print("|--------------------------------------|")
-            print("           Значение в рублях:           ")
-            print("|--------------------------------------|")
-            print(rubles(float(num)))
-            print("|--------------------------------------|")
-            print("   Склонение дробного числительного по падежам:  ")
-            print("|--------------------------------------|")
-            for x in range(0, 5):
-                inf = (p.inflect_float_num_noun(noun_ord_res,num_1,to_inflect[x]))
-                print(to_inflect[x] + " : " + inf)
-            print("|--------------------------------------|")
-        elif type_num == 0:
-            int_num = int(num)
-            cardinal_num = p.number_to_words(int_num) #количественные
-            ordinal_num = p.number_to_words(p.ordinal(int_num)) #порядковые
-            num_1 = (p.end_way(p.type_num(int_num),p.corr_num(cardinal_num),int_num)) #количественные 
-            num_2 = (p.end_way(p.type_num(int_num),p.corr_num(ordinal_num),int_num)) #порядковые
-            print("|--------------------------------------|")
-            print("Количественное числительное + сущ.: " + p.correct_card_num(int_num,num_1,noun_str)) 
-            print("Порядковое числительное + сущ.: " + p.correct_ord_noun(num_2,noun_ord_res,int_num))
-            num_1_noun = p.correct_card_num(int_num,num_1,noun_str)
-            num_2_noun = p.correct_ord_noun(num_2,noun_ord_res,int_num)
+    # def start(num, noun_str):
+    # p = engine()
+    # print("|--------------------------------------|")
+    # print("               Введите число            ")
+    # print("  Если это определнное значение то - 1  ")
+    # print("                 Иначе - 2              ")
+    # print("|--------------------------------------|")
+    # type_num = int(input())
+    # if (type_num != 1) & (type_num != 2):
+    #     print(" Error ") 
+    #     sys.exit() 
+    # elif type_num == 1:
+    #     type_num = 0
+    # else:
+    #     type_num = 1
+    # print("|--------------------------------------|")
+    # print("             Введите число              ")
+    # print("|--------------------------------------|")  
+    # num = input()
+    # print("|--------------------------------------|")
+    # print("         Введите существительное        ")
+    # print("|--------------------------------------|")
+    # noun_str = input()
+    # noun = morph.parse(noun_str)[0]
+    # noun_ord_res = noun.normal_form
+    # if 'Pltm' not in noun.tag:
+    #     noun_ord_res = noun.inflect({'sing'}).word
+    # if '.' in num and type_num == 0: # дробные значения
+    #     num_1 = in_words(float(num))
+    #     print("|--------------------------------------|")
+    #     print("           Значение в рублях:           ")
+    #     print("|--------------------------------------|")
+    #     print(rubles(float(num)))
+    #     print("|--------------------------------------|")
+    #     print("   Склонение дробного числительного по падежам:  ")
+    #     print("|--------------------------------------|")
+    #     for x in range(0, 5):
+    #         inf = (p.inflect_float_num_noun(noun_ord_res,num_1,to_inflect[x]))
+    #         print(to_inflect[x] + " : " + inf)
+    #     print("|--------------------------------------|")
+    # elif type_num == 0:
+    #     int_num = int(num)
+    #     cardinal_num = p.number_to_words(int_num) #количественные
+    #     ordinal_num = p.number_to_words(p.ordinal(int_num)) #порядковые
+    #     num_1 = (p.end_way(p.type_num(int_num),p.corr_num(cardinal_num),int_num)) #количественные 
+    #     num_2 = (p.end_way(p.type_num(int_num),p.corr_num(ordinal_num),int_num)) #порядковые
+    #     print("|--------------------------------------|")
+    #     print("Количественное числительное + сущ.: " + p.correct_card_num(int_num,num_1,noun_str)) 
+    #     print("Порядковое числительное + сущ.: " + p.correct_ord_noun(num_2,noun_ord_res,int_num))
+    #     num_1_noun = p.correct_card_num(int_num,num_1,noun_str)
+    #     num_2_noun = p.correct_ord_noun(num_2,noun_ord_res,int_num)
 
-            print("|--------------------------------------|")
-            print("   Склонение числительного по падежам:  ")
-            print("|--------------------------------------|")
-            for x in range(0, 5):
-                inf = (p.inflect_num_noun(num_1,noun_ord_res,to_inflect[x],int_num))
-                print(to_inflect[x] + " : " + inf)
-            print("|--------------------------------------|")
-        else:
-            more_num = morph.parse(num)[0].normal_form
-            print(more_num)
-            for x in range(0, 6):
-                if uncount_num[x] == more_num:
-                    for y in range(0, 5):
-                        if x == 0:
-                            to_the_end = " ".join((sck[y], noun.inflect({to_inflect[y],'plur'}).word))
-                            print(to_inflect[y] + " : " + to_the_end)
-                        elif x == 1:
-                            to_the_end = " ".join((sck_nbd[y], noun.inflect({to_inflect[y],'plur'}).word))
-                            print(to_inflect[y] + " : " + to_the_end)
-                        elif x == 2:
-                            to_the_end = " ".join((scl_to[y], noun.inflect({to_inflect[y],'plur'}).word))
-                            print(to_inflect[y] + " : " + to_the_end)
-                        elif x == 3:
-                            to_the_end = " ".join((nsck[y], noun.inflect({to_inflect[y],'plur'}).word))
-                            print(to_inflect[y] + " : " + to_the_end)
-                        elif x == 4:
-                            to_the_end = " ".join((stck[y], noun.inflect({to_inflect[y],'plur'}).word))
-                            print(to_inflect[y] + " : " + to_the_end)
-                        elif x == 5:
-                            to_the_end = " ".join((stck_to[y], noun.inflect({to_inflect[y],'plur'}).word))
-                            print(to_inflect[y] + " : " + to_the_end)
-                        else: 
-                            print(" Error ")
+    #     print("|--------------------------------------|")
+    #     print("   Склонение числительного по падежам:  ")
+    #     print("|--------------------------------------|")
+    #     for x in range(0, 5):
+    #         inf = (p.inflect_num_noun(num_1,noun_ord_res,to_inflect[x],int_num))
+    #         print(to_inflect[x] + " : " + inf)
+    #     print("|--------------------------------------|")
+    # else:
+    #     more_num = morph.parse(num)[0].normal_form
+    #     print(more_num)
+    #     for x in range(0, 6):
+    #         if uncount_num[x] == more_num:
+    #             for y in range(0, 5):
+    #                 if x == 0:
+    #                     to_the_end = " ".join((sck[y], noun.inflect({to_inflect[y],'plur'}).word))
+    #                     print(to_inflect[y] + " : " + to_the_end)
+    #                 elif x == 1:
+    #                     to_the_end = " ".join((sck_nbd[y], noun.inflect({to_inflect[y],'plur'}).word))
+    #                     print(to_inflect[y] + " : " + to_the_end)
+    #                 elif x == 2:
+    #                     to_the_end = " ".join((scl_to[y], noun.inflect({to_inflect[y],'plur'}).word))
+    #                     print(to_inflect[y] + " : " + to_the_end)
+    #                 elif x == 3:
+    #                     to_the_end = " ".join((nsck[y], noun.inflect({to_inflect[y],'plur'}).word))
+    #                     print(to_inflect[y] + " : " + to_the_end)
+    #                 elif x == 4:
+    #                     to_the_end = " ".join((stck[y], noun.inflect({to_inflect[y],'plur'}).word))
+    #                     print(to_inflect[y] + " : " + to_the_end)
+    #                 elif x == 5:
+    #                     to_the_end = " ".join((stck_to[y], noun.inflect({to_inflect[y],'plur'}).word))
+    #                     print(to_inflect[y] + " : " + to_the_end)
+    #                 else: 
+    #                     print(" Error ")
     # согласуется так же, как и количественные 
     # print("YEs, Work")
 

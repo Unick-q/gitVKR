@@ -1,5 +1,8 @@
 import sys
-# import sum_prog
+# import re
+# import ast
+from sum_prog import *
+import pymorphy2
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -8,13 +11,14 @@ from PyQt5.QtGui import *
 import decimal
 import re
 
+morph = pymorphy2.MorphAnalyzer()
 
 class Example(QWidget):
     def __init__(self):
         super().__init__()
 
         # start button
-        # self.go_button = QPushButton('&Start converting')
+        self.go_button = QPushButton('&Start')
 
         # line for inserting
         # self.insert_number_line = QDoubleSpinBox()
@@ -27,7 +31,7 @@ class Example(QWidget):
         self.insert_number_line.setValidator(self.validator)
 
         self.insert_noun_line = QLineEdit()
-        self.validator = QRegExpValidator(QRegExp(r'\d{1,7}\.\d{1,2}'), self)
+        self.validator = QRegExpValidator(QRegExp("[а-яА-Я\\s]+"), self)
         self.insert_noun_line.setValidator(self.validator)
 
         # language list
@@ -57,7 +61,7 @@ class Example(QWidget):
             self.insert_number_line.setValidator(self.validator)
             self.insert_noun_line.setText("")
             self.exit_text.setText("")
-            self.validator = QRegExpValidator(QRegExp(r'\d{1,7}\.\d{1,2}'), self)
+            self.validator = QRegExpValidator(QRegExp("[а-яА-Я\\s]+"), self)
             self.insert_noun_line.setValidator(self.validator)
         if self.language.currentText() == "Ru":
             self.insert_number_line.setText("")
@@ -66,7 +70,7 @@ class Example(QWidget):
             self.insert_number_line.setValidator(self.validator)
             self.insert_noun_line.setText("")
             self.exit_text.setText("")
-            self.validator = QRegExpValidator(QRegExp(r'\d{1,7}\.\d{1,2}'), self)
+            self.validator = QRegExpValidator(QRegExp("[а-яА-Я\\s]+"), self)
             self.insert_noun_line.setValidator(self.validator)
         if self.language.currentText() == "Ua":
             self.insert_number_line.setText("")
@@ -75,16 +79,16 @@ class Example(QWidget):
             self.insert_number_line.setValidator(self.validator)
             self.insert_noun_line.setText("")
             self.exit_text.setText("")
-            self.validator = QRegExpValidator(QRegExp(r'\d{1,7}\.\d{1,2}'), self)
+            self.validator = QRegExpValidator(QRegExp("[а-яА-Я\\s]+"), self)
             self.insert_noun_line.setValidator(self.validator)
 
     def initui(self):
 
         grid = QGridLayout()
         grid.setSpacing(10)
-        # grid.addWidget(self.go_button, 2, 0)
         grid.addWidget(self.language_title, 1, 0, 1, 4)
         grid.addWidget(self.language, 1, 1, 1, 4)
+        grid.addWidget(self.go_button, 1, 4)
         grid.addWidget(self.number_title, 2, 0, 1, 4)
         grid.addWidget(self.insert_number_line, 2, 1, 1, 4)
         grid.addWidget(self.what_number_1, 3, 1)
@@ -100,12 +104,12 @@ class Example(QWidget):
         self.show()
 
         self.language.currentIndexChanged.connect(self.change_separator)
-        self.insert_number_line.textEdited.connect(self.convert)
+        # self.insert_number_line.textEdited.connect(self.convert)
 
-        # self.go_button.clicked.connect(self.convert)
+        self.go_button.clicked.connect(self.convert)
 
     def convert(self):
-        # self.exit_text.setText("")
+        self.exit_text.setText("")
 
         self.number = []
 
@@ -183,7 +187,92 @@ class Example(QWidget):
     def convert_ru(self,number):
         """General Ru func"""
         noun = self.insert_noun_line 
-        self.exit_text.setText("")
+        # p = engine()
+        # print("|--------------------------------------|")
+        # print("               Введите число            ")
+        # print("  Если это определнное значение то - 1  ")
+        # print("                 Иначе - 2              ")
+        # print("|--------------------------------------|")
+        # type_num = int(input())
+        # if (type_num != 1) & (type_num != 2):
+        #     print(" Error ") 
+        #     sys.exit() 
+        # elif type_num == 1:
+        #     type_num = 0
+        # else:
+        #     type_num = 1
+        # print("|--------------------------------------|")
+        # print("             Введите число              ")
+        # print("|--------------------------------------|")  
+        num = self.insert_number_line.text()
+        print("Num is", num)
+        # print("|--------------------------------------|")
+        # print("         Введите существительное        ")
+        # print("|--------------------------------------|")
+        noun_str = self.insert_noun_line.text()
+        noun = morph.parse(noun_str)[0]
+        print("Noun is", noun)
+        noun_ord_res = noun.normal_form
+        if 'Pltm' not in noun.tag:
+            noun_ord_res = noun.inflect({'sing'}).word
+        # if '.' in num and type_num == 0: # дробные значения
+        #     num_1 = in_words(float(num))
+            # print("|--------------------------------------|")
+            # print("           Значение в рублях:           ")
+            # print("|--------------------------------------|")
+            # print(rubles(float(num)))
+            # print("|--------------------------------------|")
+            # print("   Склонение дробного числительного по падежам:  ")
+            # print("|--------------------------------------|")
+            # for x in range(0, 5):
+            #     inf = (p.inflect_float_num_noun(noun_ord_res,num_1,to_inflect[x]))
+            #     print(to_inflect[x] + " : " + inf)
+            # print("|--------------------------------------|")
+        # elif type_num == 0:
+        int_num = int(num)
+        cardinal_num = sum_prog.number_to_words(int_num) #количественные
+        ordinal_num = sump_prog.number_to_words(ordinal(int_num)) #порядковые
+        num_1 = (end_way(type_num(int_num),corr_num(cardinal_num),int_num)) #количественные 
+        num_2 = (end_way(type_num(int_num),corr_num(ordinal_num),int_num)) #порядковые
+        # print("|--------------------------------------|")
+        self.exit_text.setText("Количественное числительное + сущ.: " + correct_card_num(int_num,num_1,noun_str)) 
+        self.exit_text.setText("Порядковое числительное + сущ.: " + correct_ord_noun(num_2,noun_ord_res,int_num))
+        num_1_noun = correct_card_num(int_num,num_1,noun_str)
+        num_2_noun = correct_ord_noun(num_2,noun_ord_res,int_num)
+
+        self.exit_text.setText("|--------------------------------------|")
+        self.exit_text.setText("   Склонение числительного по падежам:  ")
+        self.exit_text.setText("|--------------------------------------|")
+        for x in range(0, 5):
+            inf = (inflect_num_noun(num_1,noun_ord_res,to_inflect[x],int_num))
+            self.exit_text.setText(to_inflect[x] + " : " + inf)
+        self.exit_text.setText("|--------------------------------------|")
+        # else:
+        #     more_num = morph.parse(num)[0].normal_form
+        #     self.exit_text.setText(more_num)
+        #     for x in range(0, 6):
+        #         if uncount_num[x] == more_num:
+        #             for y in range(0, 5):
+        #                 if x == 0:
+        #                     to_the_end = " ".join((sck[y], noun.inflect({to_inflect[y],'plur'}).word))
+        #                     self.exit_text.setText(to_inflect[y] + " : " + to_the_end)
+        #                 elif x == 1:
+        #                     to_the_end = " ".join((sck_nbd[y], noun.inflect({to_inflect[y],'plur'}).word))
+        #                     self.exit_text.setText(to_inflect[y] + " : " + to_the_end)
+        #                 elif x == 2:
+        #                     to_the_end = " ".join((scl_to[y], noun.inflect({to_inflect[y],'plur'}).word))
+        #                     self.exit_text.setText(to_inflect[y] + " : " + to_the_end)
+        #                 elif x == 3:
+        #                     to_the_end = " ".join((nsck[y], noun.inflect({to_inflect[y],'plur'}).word))
+        #                     self.exit_text.setText(to_inflect[y] + " : " + to_the_end)
+        #                 elif x == 4:
+        #                     to_the_end = " ".join((stck[y], noun.inflect({to_inflect[y],'plur'}).word))
+        #                     self.exit_text.setText(to_inflect[y] + " : " + to_the_end)
+        #                 elif x == 5:
+        #                     to_the_end = " ".join((stck_to[y], noun.inflect({to_inflect[y],'plur'}).word))
+        #                     self.exit_text.setText(to_inflect[y] + " : " + to_the_end)
+        #                 else: 
+        #                     self.exit_text.setText(" Error ")
 
 
 
