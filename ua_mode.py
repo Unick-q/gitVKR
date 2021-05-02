@@ -1,6 +1,6 @@
 import sys
-# import re
-# import ast
+import decimal
+import re
 from sum_prog import *
 import pymorphy2
 from PyQt5 import QtWidgets
@@ -8,8 +8,6 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
-import decimal
-import re
 
 morph = pymorphy2.MorphAnalyzer()
 
