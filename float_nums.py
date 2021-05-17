@@ -202,6 +202,7 @@ def in_words_float(amount, _gender=FEMALE):
     return u" ".join(pts)
 
 
+
 def in_words(amount, gender=None):
     check_positive(amount)
     if isinstance(amount, Decimal) and amount.as_tuple()[2] == 0:
