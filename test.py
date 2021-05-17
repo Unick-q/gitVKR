@@ -50,10 +50,10 @@ ordinal = dict(
 
 ordinal_ua = dict(
     ty="ий",
-    нуль = "нульовий", один = "перший", два = "другий", три = "третій", чотири = "четвертий", шість = "шостий", сім = "сьомий", вісім = "восьмий",
-    сорок = "сороковий", пятдесят = "п'ятдесятий", шістдесят = "шістдесятий", сімдесят = "семидесятих", вісімдесят = "восьмидесятих", девяносто = "дев'яностий",
-    сто = "сотий", двісті = "двохсотий", триста = "трьохсот", чотириста = "чотирьохсотий", пятсот = "п'ятисотий", шістсот = "шестисотий", сімсот = "семисотий", вісімсот = "восмісотий", девятсот = "дев'ятисотий",
-    тисяча = "тисячний", мільйон = "мілліoнний", мільярд = "мілліaрдний", трильйон = "трілліoнний", квадрильйон = "квaдрілліонний", квінтильйон = "квінтілліoнний"
+    нуль="нульовий",один="перший",два="другий",три="третій",чотири="четвертий",шість="шостий",сім="сьомий",вісім="восьмий",
+    сорок="сороковий",сімдесят="семидесятий",вісімдесят="восьмидесятих",
+    сто="сотий",двісті="двохсотий",триста="трьохсот",чотириста="чотирьохсотий",пятсот="п'ятисотий",шістсот="шестисотий",сімсот="семисотий",вісімсот="восмісотий",девятсот="дев'ятисотий",
+    тисяча="тисячний",мільйон="мілліoнний",мільярд="мілліaрдний",трильйон="трілліoнний",квадрильйон="квaдрілліонний",квінтильйон="квінтілліoнний"
 )
 
 ordinal_tens = dict(
@@ -61,7 +61,7 @@ ordinal_tens = dict(
 )
 
 ordinal_tens_ua = dict(
-    тисяча = "тисячний", мільйон = "мілліoнний", мільярд = "мілліaрдний", трильйон = "трілліoнний", квадрильйон = "квaдрілліонний", квінтильйон = "квінтілліoнний"
+    тисяча="тисячний", мільйон="мілліoнний", мільярд="мілліaрдний",трильйон ="трілліoнний",квадрильйон="квaдрілліонний",квінтильйон="квінтілліoнний"
 )
 
 ordinal_suff = "|".join(list(ordinal.keys()))
@@ -82,13 +82,26 @@ unit_cardinal = ["", "одна", "две", "три", "четыре", "пять",
 unit_cardinal_ua = ["", "одна", "дві", "три", "чотири", "п'ять", "шість", "сім", "вісім", "дев'ять"]
 unit_coll = ["", "двое", "трое", "четверо", "пятеро", "шестеро", "семеро", "восьмеро", "девятеро", "десятеро"]
 unit_coll_ua = ["", "двоє", "троє", "четверо", "п'ятеро", "шестеро", "семеро", "восьмеро", "дев'ятеро", "десятеро"]
-uncount_num = ["сколько","сколько-нибудь","сколько-то","несколько","столько","столько-то"]
+uncount_num = ["сколько","сколько-нибудь","сколько-то","несколько","столько","столько-то","мало","много"]
 sck = ["сколько""сколька","скольку","сколько","скольком","скольке"]
 sck_nbd = ["сколько-нибудя","сколько-нибудю","сколько-нибудя","сколько-нибудём","сколько-нибуде"]
 scl_to = ["сколько-то","сколько-то","сколько-то","сколько-то","сколько-то"]
 nsck = ["нескольких","нескольким","несколько","несколькими","нескольких"]
 stck = ["столька","стольку","столько","стольком","стольке"]
 stck_to = ["столько-то","столько-то","столько-то","столько-то","столько-то"]
+malo = ["нет варианта","нет варианта","мало","нет варианта","нет варианта"]
+mnogo = ["многих","многим","много","многими","многих"]
+# перевести !!! добавить!!!
+uncount_num_ua = ["сколько","сколько-нибудь","сколько-то","несколько","столько","столько-то"]
+uncount_num_exception_ua = ["мало","много"]
+sck_ua = ["сколько""сколька","скольку","сколько","скольком","скольке"]
+sck_nbd_ua = ["сколько-нибудя","сколько-нибудю","сколько-нибудя","сколько-нибудём","сколько-нибуде"]
+scl_to_ua = ["сколько-то","сколько-то","сколько-то","сколько-то","сколько-то"]
+nsck_ua = ["нескольких","нескольким","несколько","несколькими","нескольких"]
+stck_ua = ["столька","стольку","столько","стольком","стольке"]
+stck_to_ua = ["столько-то","столько-то","столько-то","столько-то","столько-то"]
+malo_ua = ["нет варианта","нет варианта","мало","нет варианта","нет варианта"]
+mnogo_ua = ["многих","многим","много","многими","многих"]
 
 teen = ["десять",
     "одиннадцать","двенадцать","тринадцать",
@@ -108,6 +121,8 @@ ten = [
     "сорок","пятьдесят","шестьдесят",
     "семьдесят","восемьдесят","девяносто",
 ]
+
+# апостроф изменить
 
 ten_ua = [
     "",
@@ -174,7 +189,7 @@ class Example(QWidget):
 
         def millfn(self, ind=0):
             if ind > len(mill) - 1:
-                print3("Заданное число превосходит допустимое значение")
+                self.exit_text.setText("Заданное число превосходит допустимое значение")
                 raise NumOutOfRangeError
             return mill[ind]
 
@@ -457,7 +472,7 @@ class Example(QWidget):
         
         def end_way(self, array, endstr, num):
             result = []
-            if num > 1000 or num < 0:
+            if num > 1000 or num < -1000:
                 for i in range(len(array)):
                     result = re.sub(mill[i+1],morph.parse(mill[i+1])[0].make_agree_with_number(array[i]).word, endstr)
                     endstr = result
@@ -590,12 +605,28 @@ class Example(QWidget):
                     else:
                         if pup[x] == 'сто':
                             pup[x] = 'ста'
+                        elif pup[x] == 'тысячи':
+                            pup[x] = morph.parse(pup[x])[0].inflect({typeinf,'plur'}).word
                         else:
                             pup[x] = morph.parse(pup[x])[0].inflect({typeinf}).word
                         noun_res = noun_res.inflect({typeinf,"plur"}).word
                 result = "{}".format(" ".join(pup))
                 total = " ".join((result, noun_res))
             return total
+
+        def inflect_num_noun_2(self, endstr, noun, typeinf, num): #склонение порядкового
+            result = []
+            mim = re.split(" ",endstr)
+            last = morph.parse(mim[len(mim) - 1])[0]
+            for x in range(len(mim)):
+                noun_res = morph.parse(noun)[0]
+                gen = noun_res.tag.gender
+                mim[len(mim) - 1] = last.inflect({gen,typeinf}).word #числит.
+                noun_res = noun_res.inflect({typeinf}).word # сущ.
+                result = "{}".format(" ".join(mim))
+                total = " ".join((result, noun_res))
+            return total
+
 
         def inflect_float_num_noun(self, noun, endstr, typeinf):
             result = []
@@ -604,12 +635,11 @@ class Example(QWidget):
                 tyt = 'полтора'
                 noun_res = morph.parse(noun)[0]
                 gen = noun_res.tag.gender 
-                tyt = morph.parse(tyt)[0].inflect({typeinf}).word
-                tyt = morph.parse(tyt)[0].inflect({gen}).word
-                noun_res = noun_res.inflect({"gent"}).word
+                tyt = morph.parse(morph.parse(tyt)[0].inflect({gen}).word)[0].inflect({typeinf}).word
+                noun_res = noun_res.inflect({typeinf}).word
                 float_noun = " ".join((tyt, noun_res))
             else:
-                for x in range(len(tyt)):  #Добавить полтора и т.д
+                for x in range(len(tyt)):  
                     noun_res = morph.parse(noun)[0]
                     if ('accs' in typeinf) and (tyt[x] == 'десятых'): 
                         tyt[x] = 'десятых'
@@ -692,9 +722,9 @@ class Example(QWidget):
                     else:
                         n = int(num)
                 try:
-                    post = nth[n % 100]
+                    post = nth_ua[n % 100]
                 except KeyError:
-                    post = nth[n % 10]
+                    post = nth_ua[n % 10]
                 return "{}{}".format(num, post)
             else:
                 mo = re.search(r"(%s)\Z" % ordinal_suff_ua, num)
@@ -706,7 +736,7 @@ class Example(QWidget):
 
         def millfn(self, ind=0):
             if ind > len(mill_ua) - 1:
-                print3("Заданное число превосходит допустимое значение")
+                self.exit_text.setText("Заданное число превосходит допустимое значение")
                 raise NumOutOfRangeError
             return mill_ua[ind]
 
@@ -847,21 +877,8 @@ class Example(QWidget):
             decimal="целих",
             threshold=None,
         ):
-            """
-            Вернёт число прописью.
-            group = 1, 2 или 3 для группировки чисел перед преобразованием в слова
-            запятая: определить запятую
-            andword: слово для «и». Может быть установлен на "".
-                например "сто и один" vs "сто один"
-            ноль: слово для '0'
-            один: слово для "1"
-            десятичный: слово для десятичной точки
-            порог: числа выше порога не превращаются в слова
-            параметры не запоминаются из последнего вызова.
-            """
             self.number_args = dict(andword=andword, zero=zero, one=one)
             num = "%s" % num
-
             # Обработка "стилистических" преобразований (до заданного порога)
             if threshold is not None and float(num) > threshold:
                 spnum = num.split(".", 1)
@@ -936,7 +953,6 @@ class Example(QWidget):
             if first != 0:
                 numchunks = chunks[0].split("%s " % comma)
 
-
             if myord and numchunks:
                 mo = re.search(r"(%s)\Z" % ordinal_suff_ua, numchunks[-1])
                 result = []
@@ -989,9 +1005,14 @@ class Example(QWidget):
         
         def end_way(self, array, endstr, num):
             result = []
-            if num > 1000 or num < 0:
+            if num > 1000 or num < -1000:
                 for i in range(len(array)): #ошибка 
-                    result = re.sub(mill_ua[i+1],morph_ua.parse(mill_ua[i+1])[0].make_agree_with_number(array[i]).word, endstr)
+                    if array[i] == 1 and array[i-1] not in [12,13,14]:
+                        result = re.sub(mill_ua[i+1],morph_ua.parse(mill_ua[i+1])[0].inflect({'nomn'}).word, endstr)
+                    elif array[i] in [2,3,4] and array[i-1] not in [12,13,14]:
+                        result = re.sub(mill_ua[i+1],morph_ua.parse(mill_ua[i+1])[0].inflect({'gent'}).word, endstr)
+                    else:
+                        result = re.sub(mill_ua[i+1],morph_ua.parse(mill_ua[i+1])[0].inflect({'gent','plur'}).word, endstr)
                     endstr = result
             else:
                 result = endstr
@@ -1031,21 +1052,16 @@ class Example(QWidget):
                 noun_res = morph_ua.parse(noun)[0]
                 gen = noun_res.tag.gender
                 if num % 10 == 1:
-                    print("Yes-0")
                     if num % 100 in [11]:
                         noun_res = noun_res.inflect({typeinf,'plur'}).word # сущ.
                     else:
                         noun_res = noun_res.inflect({typeinf}).word # сущ.
-                    pup[x] = morph_ua.parse(pup[x])[0].inflect({typeinf,gen}).word #числит.
-                    print(noun_res)
-                    print(pup[x])
+                    print("Here is ",pup[x])
+                    pup[x] = morph_ua.parse(pup[x])[0].inflect({typeinf}).word #числит.
                 else:
-                    print("Yes-1")
                     if num % 10 == 2 and num % 100 not in [12,13,14]:
-                        print("Yes-2")
                         pup[x] = morph_ua.parse(pup[x])[0].inflect({typeinf,gen}).word #числит.
-                    elif num % 10 == 3 and num % 100 not in [12,13,14] and x == rang - 1:
-                        print("Yes-3")
+                    elif num % 10 == 3 and num % 100 not in [12,13,14] and x == rang - 1: # 14 нет проверки 
                         if typeinf == 'gent':
                             pup[x] = 'трьох'
                         elif typeinf == 'datv':
@@ -1057,11 +1073,8 @@ class Example(QWidget):
                         elif typeinf == 'loct':
                             pup[x] = 'трьох'
                     else:
-                        print("Yes-4")
                         pup[x] = morph_ua.parse(pup[x])[0].inflect({typeinf}).word #числит.
                     noun_res = noun_res.inflect({"plur",typeinf}).word # сущ.
-                    print(noun_res)
-                    print(pup[x])
                 result = "{}".format(" ".join(pup))
                 total = " ".join((result, noun_res))
             return total
@@ -1073,8 +1086,8 @@ class Example(QWidget):
                 tyt = 'півтора'
                 noun_res = morph_ua.parse(noun)[0]
                 gen = noun_res.tag.gender 
-                tyt = morph_ua.parse(tyt)[0].inflect({"gent","sing",gen}).word # проверить ошибка
-                noun_res = noun_res.inflect({"gent"}).word
+                tyt = morph.parse(morph.parse(tyt)[0].inflect({gen}).word)[0].inflect({typeinf}).word
+                noun_res = noun_res.inflect({typeinf}).word
                 float_noun = " ".join((tyt, noun_res))
             else:
                 for x in range(len(tyt)): 
@@ -1100,10 +1113,6 @@ class Example(QWidget):
                 result = "{}".format(" ".join(olo))
                 total = " ".join((result, noun.normal_form))
             elif gen in noun.tag:
-                print("Here-0")
-                print(gen)
-                print(olo)
-                print(last)
                 olo[len(olo) - 1] = last.inflect({gen,'nomn'}).word
                 result = "{}".format(" ".join(olo))
                 total = " ".join((result, noun.normal_form))
@@ -1113,50 +1122,33 @@ class Example(QWidget):
         
         def correct_card_num(self, num, endstr, noun): #собирательные и количественные 
             noun_res = morph_ua.parse(noun)[0]
-            what_gen = noun_res.tag.gender
+            nrm_form = morph_ua.parse(noun_res.normal_form)[0]
+            what_gen = nrm_form.tag.gender
             result = []
             aka = re.split(" ",endstr) #изменить что последняя цифра, а не одна цифра
             if (('Pltm' in noun_res.tag) and (num % 10 in digits) or (('anim' in noun_res.tag) and ('gent' in noun_res.tag or 'accs' in noun_res.tag) and ('plur' in noun_res.tag) and (num % 10 in digits))): #нужно брать 2-10 числа и менять на собирательные
-                print('Yes-Ues-0')
                 num %= 10
                 aka[len(aka) - 1] = unit_coll[num-1] #тут error
                 result = "{}".format(" ".join(aka))
                 noun_res = noun_res.inflect({'plur','gent'}).word
             else: #Склоняем 1,2 в конце числительного + существителное 
-                print('Yes-Ues-1.1')
                 if aka[len(aka) - 1] == 'один' or aka[len(aka) - 1] == 'два':
-                    print('Yes-Ues-1.2')
                     aka[len(aka) - 1] = morph_ua.parse(aka[len(aka) - 1])[0].inflect({what_gen}).word
                     result = "{}".format(" ".join(aka))
-                    print("Result is ",result)
                 else:
-                    print('Yes-Ues-1.3')
                     result = endstr
-                    print("Result is ",result)
             if num % 10 == 1 : # заменить!!!!!!!!!!
-                print('Yes-Ues-2')
                 if num % 100 == 11:
-                    print('Yes-Ues-3')
                     noun_res = noun_res.inflect({'gent','plur'}).word 
-                    print("Result is ",noun_res)
                 else:
-                    print('Yes-Ues-4')
                     noun_res = noun_res.inflect({'nomn'}).word   
-                    print("Result is ",noun_res)
             elif num % 10 in [2,3,4]:
-                print('Yes-Ues-5')
                 if num % 100 in [12,13,14]:
-                    print('Yes-Ues-6')
                     noun_res = noun_res.inflect({'gent','plur'}).word
-                    print("Result is ",noun_res)
                 else:
-                    print('Yes-Ues-7')
                     noun_res = noun_res.inflect({'nomn','plur'}).word
-                    print("Result is ",noun_res)
             else:
-                print('Yes-Ues-8')
                 noun_res = noun_res.inflect({'gent','plur'}).word
-                print("Result is ",noun_res)
             total_2 = " ".join((result, noun_res))
             return total_2
 
@@ -1183,15 +1175,15 @@ class Example(QWidget):
         self.insert_noun_line.setValidator(self.validator)
 
         # language list
-        self.language_title = QLabel('Language:')
-        self.number_title = QLabel('Number:')
-        self.what_number_1 = QCheckBox('Numeral')
-        self.what_number_2 = QCheckBox('Indefinite')
-        self.what_number_3 = QCheckBox('Money')
-        self.noun_title = QLabel('Noun:')
+        self.language_title = QLabel('Язык:')
+        self.number_title = QLabel('Число:')
+        self.what_number_1 = QCheckBox('Количественное')
+        self.what_number_2 = QCheckBox('Порядковое')
+        self.what_number_3 = QCheckBox('Собирательное')
+        self.what_number_4 = QCheckBox('Валюта')
+        self.noun_title = QLabel('Существительное:')
         self.language = QComboBox()
         self.language.setFixedWidth(70)
-        self.language.addItem('En')
         self.language.addItem('Ru')
         self.language.addItem('Ua')
 
@@ -1202,15 +1194,6 @@ class Example(QWidget):
         self.initui()
 
     def change_separator(self):
-        if self.language.currentText() == "En":
-            self.insert_number_line.setText("")
-            self.exit_text.setText("")
-            self.validator = QRegExpValidator(QRegExp(r'\d{1,7}\.\d{1,5}'), self)
-            self.insert_number_line.setValidator(self.validator)
-            self.insert_noun_line.setText("")
-            self.exit_text.setText("")
-            self.validator = QRegExpValidator(QRegExp("[а-яА-Я\\s]+"), self)
-            self.insert_noun_line.setValidator(self.validator)
         if self.language.currentText() == "Ru":
             self.insert_number_line.setText("")
             self.exit_text.setText("")
@@ -1242,8 +1225,9 @@ class Example(QWidget):
         grid.addWidget(self.what_number_1, 2, 1)
         grid.addWidget(self.what_number_2, 2, 2)
         grid.addWidget(self.what_number_3, 2, 3)
-        grid.addWidget(self.noun_title, 4, 0, 1, 4)
-        grid.addWidget(self.insert_noun_line, 4, 1, 1, 4)
+        grid.addWidget(self.what_number_4, 2, 4)
+        grid.addWidget(self.noun_title, 4, 0, 1, 3)
+        grid.addWidget(self.insert_noun_line, 4, 2, 1, 3)
         grid.addWidget(self.exit_text, 5, 0, 1, 5)
         self.setLayout(grid)
 
@@ -1256,7 +1240,7 @@ class Example(QWidget):
 
         self.go_button.clicked.connect(self.convert)
 
-    def convert(self):
+    def convert(self):  # переделать 
         self.exit_text.setText("")
 
         self.number = []
@@ -1279,8 +1263,6 @@ class Example(QWidget):
         if self.language.currentText() == "Ru":
             self.convert_ru()
 
-        if self.language.currentText() == "En":
-            self.convert_en(self.number)
     
     def num_is_ok(self,text):
         try:
@@ -1301,11 +1283,10 @@ class Example(QWidget):
         noun = morph.parse(noun_str)[0]
         noun_ord_res = noun.normal_form
         if self.num_is_ok(str(self.insert_number_line.text())) == True:
-            if self.what_number_3.isChecked() and self.what_number_2.checkState() == Qt.Unchecked and self.what_number_1.checkState() == Qt.Unchecked:
+            if self.what_number_4.isChecked() and self.what_number_3.checkState() == Qt.Unchecked and self.what_number_2.checkState() == Qt.Unchecked and self.what_number_1.checkState() == Qt.Unchecked:
                 self.exit_text.append("|--------------------------------------|")
                 self.exit_text.append("           Числительное в валюте:           ")
                 self.exit_text.append("|--------------------------------------|")
-                # self.exit_text.append("Значение в рублях: " + rubles(float(num)))
                 coin = number[1]
                 if int(coin) > 9:
                     coin = coin[1]
@@ -1366,16 +1347,12 @@ class Example(QWidget):
                     int_num = int(num)
                     cardinal_num = self.ua.number_to_words(int_num) #количественные
                     ordinal_num = self.ua.number_to_words(self.ua.ordinal_ua(int_num)) #порядковые
-                    print("Порядковое: ",ordinal_num)
                     num_1 = (self.ua.end_way(self.ua.type_num(int_num),self.ua.corr_num(cardinal_num),int_num)) #количественные 
                     num_2 = (self.ua.end_way(self.ua.type_num(int_num),self.ua.corr_num(ordinal_num),int_num)) #порядковые
-                    print("Порядковое-2: ",num_2)
                     self.exit_text.append("|-------------------------------------------------|")
                     self.exit_text.append("Количественное числительное + сущ.: " + self.ua.correct_card_num(int_num,num_1,noun_str)) 
                     self.exit_text.append("Порядковое числительное + сущ.: " + self.ua.correct_ord_noun(num_2,noun_ord_res,int_num))
-                    num_1_noun = self.ua.correct_card_num(int_num,num_1,noun_str)
-                    num_2_noun = self.ua.correct_ord_noun(num_2,noun_ord_res,int_num)
-
+                
                     self.exit_text.append("|-------------------------------------------------|")
                     self.exit_text.append("         Склонение числительного по падежам:       ")
                     self.exit_text.append("|-------------------------------------------------|")
@@ -1396,25 +1373,25 @@ class Example(QWidget):
                 self.exit_text.append("   Склонение неопределённо-количественного числительного по падежам:  ")
                 self.exit_text.append("|--------------------------------------|")
                 for x in range(0, 6):
-                    if uncount_num[x] == more_num:
+                    if uncount_num_ua[x] == more_num:
                         for y in range(0, 5):
                             if x == 0:
-                                to_the_end = " ".join((sck[y], noun.inflect({to_inflect[y],'plur'}).word))
+                                to_the_end = " ".join((sck_ua[y], noun.inflect({to_inflect[y],'plur'}).word))
                                 self.exit_text.append(inflect_str_ua[y] + " : " + to_the_end)
                             elif x == 1:
-                                to_the_end = " ".join((sck_nbd[y], noun.inflect({to_inflect[y],'plur'}).word))
+                                to_the_end = " ".join((sck_nbd_ua[y], noun.inflect({to_inflect[y],'plur'}).word))
                                 self.exit_text.append(inflect_str_ua[y] + " : " + to_the_end)
                             elif x == 2:
-                                to_the_end = " ".join((scl_to[y], noun.inflect({to_inflect[y],'plur'}).word))
+                                to_the_end = " ".join((scl_to_ua[y], noun.inflect({to_inflect[y],'plur'}).word))
                                 self.exit_text.append(inflect_str_ua[y] + " : " + to_the_end)
                             elif x == 3:
-                                to_the_end = " ".join((nsck[y], noun.inflect({to_inflect[y],'plur'}).word))
+                                to_the_end = " ".join((nsck_ua[y], noun.inflect({to_inflect[y],'plur'}).word))
                                 self.exit_text.append(inflect_str_ua[y] + " : " + to_the_end)
                             elif x == 4:
-                                to_the_end = " ".join((stck[y], noun.inflect({to_inflect[y],'plur'}).word))
+                                to_the_end = " ".join((stck_ua[y], noun.inflect({to_inflect[y],'plur'}).word))
                                 self.exit_text.append(inflect_str_ua[y] + " : " + to_the_end)
                             elif x == 5:
-                                to_the_end = " ".join((stck_to[y], noun.inflect({to_inflect[y],'plur'}).word))
+                                to_the_end = " ".join((stck_to_ua[y], noun.inflect({to_inflect[y],'plur'}).word))
                                 self.exit_text.append(inflect_str_ua[y] + " : " + to_the_end)
                             else: 
                                 self.exit_text.setText(" Error ")
@@ -1432,16 +1409,19 @@ class Example(QWidget):
         noun_str = self.insert_noun_line.text()
         noun = morph.parse(noun_str)[0]
         noun_ord_res = noun.normal_form
-        if self.num_is_ok(str(self.insert_number_line.text())) == True:
-            if self.what_number_3.isChecked() and self.what_number_2.checkState() == Qt.Unchecked and self.what_number_1.checkState() == Qt.Unchecked:
+        if self.what_number_4.isChecked() and self.what_number_3.checkState() == Qt.Unchecked and self.what_number_2.checkState() == Qt.Unchecked and self.what_number_1.checkState() == Qt.Unchecked:
+            if self.num_is_ok(str(self.insert_number_line.text())) == True:
                 self.exit_text.append("|--------------------------------------|")
                 self.exit_text.append("           Числительное в валюте:           ")
                 self.exit_text.append("|--------------------------------------|")
                 self.exit_text.append("Значение в рублях: " + rubles(float(num)))
-            elif self.what_number_1.isChecked() and self.what_number_2.checkState() == Qt.Unchecked and self.what_number_3.checkState() == Qt.Unchecked:
+            else:
+                self.exit_text.setText(" Ошибка: Ввод некорректен")
+        elif self.what_number_1.isChecked() or self.what_number_2.isChecked() or self.what_number_3.isChecked() and self.what_number_4.checkState() == Qt.Unchecked:
+            if self.num_is_ok(str(self.insert_number_line.text())) == True:
                 if 'Pltm' not in noun.tag:
                     noun_ord_res = noun.inflect({'sing'}).word
-                if '.' in num and self.what_number_1.isChecked() and self.what_number_2.checkState() == Qt.Unchecked: # дробные значения
+                if '.' in num and self.what_number_1.isChecked() and self.what_number_2.checkState() == Qt.Unchecked and self.what_number_3.checkState() == Qt.Unchecked: # дробные значения
                     num_1 = in_words(float(num))
                     self.exit_text.append("|--------------------------------------|")
                     self.exit_text.append("   Склонение дробного числительного по падежам:  ")
@@ -1450,19 +1430,12 @@ class Example(QWidget):
                         inf = (self.rus.inflect_float_num_noun(noun_ord_res,num_1,to_inflect[x]))
                         self.exit_text.append(inflect_str[x] + " : " + inf)
                     self.exit_text.append("|--------------------------------------|")
-                elif self.what_number_1.isChecked() and self.what_number_2.checkState() == Qt.Unchecked:
+                elif self.what_number_3.isChecked() and 'Pltm' not in noun.tag and self.what_number_1.checkState() == Qt.Unchecked and self.what_number_2.checkState() == Qt.Unchecked:
                     int_num = int(num)
-                    cardinal_num = self.rus.number_to_words(int_num) #количественные
-                    ordinal_num = self.rus.number_to_words(self.rus.ordinal(int_num)) #порядковые
-                    print("Порядковое: ",ordinal_num)
-                    num_1 = (self.rus.end_way(self.rus.type_num(int_num),self.rus.corr_num(cardinal_num),int_num)) #количественные 
-                    num_2 = (self.rus.end_way(self.rus.type_num(int_num),self.rus.corr_num(ordinal_num),int_num)) #порядковые
-                    print("Порядковое-2: ",num_2)
+                    cardinal_num = self.rus.number_to_words(int_num) #собирательное
+                    num_1 = (self.rus.end_way(self.rus.type_num(int_num),self.rus.corr_num(cardinal_num),int_num)) #собирательное 
                     self.exit_text.append("|-------------------------------------------------|")
-                    self.exit_text.append("Количественное числительное + сущ.: " + self.rus.correct_card_num(int_num,num_1,noun_str)) 
-                    self.exit_text.append("Порядковое числительное + сущ.: " + self.rus.correct_ord_noun(num_2,noun_ord_res,int_num))
-                    num_1_noun = self.rus.correct_card_num(int_num,num_1,noun_str)
-                    num_2_noun = self.rus.correct_ord_noun(num_2,noun_ord_res,int_num)
+                    self.exit_text.append(" Количественное числительное + сущ.: " + self.rus.correct_card_num(int_num,num_1,noun_str)) 
                     self.exit_text.append("|-------------------------------------------------|")
                     self.exit_text.append("         Склонение числительного по падежам:       ")
                     self.exit_text.append("|-------------------------------------------------|")
@@ -1470,165 +1443,76 @@ class Example(QWidget):
                         inf = (self.rus.inflect_num_noun(num_1,noun_ord_res,to_inflect[x],int_num))
                         self.exit_text.append(inflect_str[x] + " : " + inf)
                     self.exit_text.append("|-------------------------------------------------|")
-                else:
-                    self.exit_text.setText(" Error: can't do this")
-            elif self.what_number_2.isChecked() or self.what_number_3.isChecked():
-                self.exit_text.setText(" Error: not correct choice")
-            else: 
-                self.exit_text.setText(" Error: choose what are we goona do")
-        elif self.str_is_ok(str(self.insert_number_line.text())) == False:
-            if self.what_number_2.isChecked() and self.what_number_1.checkState() == Qt.Unchecked and self.what_number_3.checkState() == Qt.Unchecked:
-                more_num = morph.parse(num)[0].normal_form
-                self.exit_text.append("|--------------------------------------|")
-                self.exit_text.append("   Склонение неопределённо-количественного числительного по падежам:  ")
-                self.exit_text.append("|--------------------------------------|")
-                for x in range(0, 6):
-                    if uncount_num[x] == more_num:
+                elif self.what_number_1.isChecked() and self.what_number_2.checkState() == Qt.Unchecked and self.what_number_3.checkState() == Qt.Unchecked:
+                    int_num = int(num)
+                    cardinal_num = self.rus.number_to_words(int_num) #количественные
+                    num_1 = (self.rus.end_way(self.rus.type_num(int_num),self.rus.corr_num(cardinal_num),int_num)) #количественные 
+                    self.exit_text.append("|-------------------------------------------------|")
+                    self.exit_text.append(" Количественное числительное + сущ.: " + self.rus.correct_card_num(int_num,num_1,noun_str)) 
+                    self.exit_text.append("|-------------------------------------------------|")
+                    self.exit_text.append("         Склонение числительного по падежам:       ")
+                    self.exit_text.append("|-------------------------------------------------|")
+                    for x in range(0, 5):
+                        inf = (self.rus.inflect_num_noun(num_1,noun_ord_res,to_inflect[x],int_num))
+                        self.exit_text.append(inflect_str[x] + " : " + inf)
+                    self.exit_text.append("|-------------------------------------------------|")
+                elif self.what_number_2.isChecked() and self.what_number_1.checkState() == Qt.Unchecked and self.what_number_3.checkState() == Qt.Unchecked:
+                    int_num = int(num)
+                    ordinal_num = self.rus.number_to_words(self.rus.ordinal(int_num)) #порядковые
+                    num_2 = (self.rus.end_way(self.rus.type_num(int_num),self.rus.corr_num(ordinal_num),int_num)) #порядковые
+                    self.exit_text.append("|-------------------------------------------------|")
+                    self.exit_text.append(" Порядковое числительное + сущ.: " + self.rus.correct_ord_noun(num_2,noun_ord_res,int_num))
+                    self.exit_text.append("|-------------------------------------------------|")
+                    self.exit_text.append("         Склонение числительного по падежам:       ")
+                    self.exit_text.append("|-------------------------------------------------|")
+                    for x in range(0, 5):
+                        inf = (self.rus.inflect_num_noun_2(num_2,noun_ord_res,to_inflect[x],int_num))
+                        self.exit_text.append(inflect_str[x] + " : " + inf)
+                    self.exit_text.append("|-------------------------------------------------|")
+            elif self.str_is_ok(str(self.insert_number_line.text())) == False: # неопредел колич
+                if self.what_number_1.isChecked() and self.what_number_2.checkState() == Qt.Unchecked and self.what_number_3.checkState() == Qt.Unchecked: 
+                    more_num = morph.parse(num)[0].normal_form
+                    self.exit_text.append("|--------------------------------------|")
+                    self.exit_text.append("   Склонение неопределённо-количественного числительного по падежам:  ")
+                    self.exit_text.append("|--------------------------------------|")
+                    # исправить множественное числоч
+                    if more_num in uncount_num:
                         for y in range(0, 5):
-                            if x == 0:
+                            if more_num == "сколько":
                                 to_the_end = " ".join((sck[y], noun.inflect({to_inflect[y],'plur'}).word))
                                 self.exit_text.append(inflect_str[y] + " : " + to_the_end)
-                            elif x == 1:
+                            elif more_num == "сколько-нибудь":
                                 to_the_end = " ".join((sck_nbd[y], noun.inflect({to_inflect[y],'plur'}).word))
                                 self.exit_text.append(inflect_str[y] + " : " + to_the_end)
-                            elif x == 2:
+                            elif more_num == "сколько-то":
                                 to_the_end = " ".join((scl_to[y], noun.inflect({to_inflect[y],'plur'}).word))
                                 self.exit_text.append(inflect_str[y] + " : " + to_the_end)
-                            elif x == 3:
+                            elif more_num == "несколько":
                                 to_the_end = " ".join((nsck[y], noun.inflect({to_inflect[y],'plur'}).word))
                                 self.exit_text.append(inflect_str[y] + " : " + to_the_end)
-                            elif x == 4:
+                            elif more_num == "столько":
                                 to_the_end = " ".join((stck[y], noun.inflect({to_inflect[y],'plur'}).word))
                                 self.exit_text.append(inflect_str[y] + " : " + to_the_end)
-                            elif x == 5:
+                            elif more_num == "столько-то":
                                 to_the_end = " ".join((stck_to[y], noun.inflect({to_inflect[y],'plur'}).word))
                                 self.exit_text.append(inflect_str[y] + " : " + to_the_end)
+                            elif more_num == "мало":
+                                if malo[y] == 'нет варианта':
+                                    self.exit_text.append(inflect_str[y] + " : " + malo[y])
+                                else:
+                                    to_the_end = " ".join((malo[y], noun.inflect({to_inflect[y],'plur'}).word))
+                                    self.exit_text.append(inflect_str[y] + " : " + to_the_end)
+                            elif more_num == "много":
+                                to_the_end = " ".join((mnogo[y], noun.inflect({to_inflect[y],'plur'}).word))
+                                self.exit_text.append(inflect_str[y] + " : " + to_the_end)
                             else: 
-                                self.exit_text.setText(" Error ")
-            elif self.what_number_1.isChecked() or self.what_number_3.isChecked():
-                    self.exit_text.setText(" Error: can't do this")
+                                self.exit_text.setText(" Ошибка: Что-то пошло не так( ")
+                    else: 
+                        self.exit_text.setText(" Не удалось просклонять данное числительное ")
             else:
-                self.exit_text.setText(" Error: choose what are we goona do")
+                self.exit_text.setText(" Ошибка: Ввод некорректен")
         else:
-            self.exit_text.setText(" Error : Your input is incorrect")
-
-
-
-    def convert_en(self, number):
-        self.exit_text.append("|--------------------------------------|")
-        self.exit_text.append("           Числительное в валюте:           ")
-        self.exit_text.append("|--------------------------------------|")
-
-        if int(number[0]) == 0 and int(number[1]) == 0:
-            self.exit_text.setText("zero dollar")
-        else:
-            if int(number[0]) == 1:
-                self.exit_text.setText("one dollar")
-            else:
-                self.exit_text.setText(
-                    self.int_to_en(int(number[0])) + " dollars")
-            if int(number[0]) == 0 and int(number[1]) != 0:
-                if int(number[1]) == 1:
-                    self.exit_text.setText("one cent")
-                else:
-                    self.dollars = self.exit_text.toPlainText()
-                    self.exit_text.setText(
-                        self.int_to_en(int(number[1])) + " cents")
-
-            else:
-                if int(number[1]) == 1:
-                    self.dollars = self.exit_text.toPlainText()
-                    self.exit_text.setText(self.dollars + " and one cent")
-                else:
-                    if int(number[1]) != 0:
-                        self.dollars = self.exit_text.toPlainText()
-                        self.exit_text.setText(
-                            self.dollars + " and " +
-                            self.int_to_en(int(number[1])) + " cents")
-
-    def int_to_en(self, num):
-        """convert int value to en text"""
-
-        d = {
-            0: 'zero',
-            1: 'one',
-            2: 'two',
-            3: 'three',
-            4: 'four',
-            5: 'five',
-            6: 'six',
-            7: 'seven',
-            8: 'eight',
-            9: 'nine',
-            10: 'ten',
-            11: 'eleven',
-            12: 'twelve',
-            13: 'thirteen',
-            14: 'fourteen',
-            15: 'fifteen',
-            16: 'sixteen',
-            17: 'seventeen',
-            18: 'eighteen',
-            19: 'nineteen',
-            20: 'twenty',
-            30: 'thirty',
-            40: 'forty',
-            50: 'fifty',
-            60: 'sixty',
-            70: 'seventy',
-            80: 'eighty',
-            90: 'ninety'
-        }
-        k = 1000
-        m = k * 1000
-        b = m * 1000
-        t = b * 1000
-
-        assert (0 <= num)
-
-        if num < 20:
-            return d[num]
-
-        if num < 100:
-            if num % 10 == 0:
-                return d[num]
-            else:
-                return d[num // 10 * 10] + '-' + d[num % 10]
-
-        if num < k:
-            if num % 100 == 0:
-                return d[num // 100] + ' hundred'
-            else:
-                return d[num // 100] + ' hundred and ' + self.int_to_en(
-                    num % 100)
-
-        if num < m:
-            if num % k == 0:
-                return self.int_to_en(num // k) + ' thousand'
-            else:
-                return self.int_to_en(
-                    num // k) + ' thousand, ' + self.int_to_en(num % k)
-
-        if num < b:
-            if (num % m) == 0:
-                return self.int_to_en(num // m) + ' million'
-            else:
-                return self.int_to_en(
-                    num // m) + ' million, ' + self.int_to_en(num % m)
-
-        if num < t:
-            if (num % b) == 0:
-                return self.int_to_en(num // b) + ' billion'
-            else:
-                return self.int_to_en(
-                    num // b) + ' billion, ' + self.int_to_en(num % b)
-
-        if num % t == 0:
-            return self.int_to_en(num // t) + ' trillion'
-        else:
-            return self.int_to_en(num // t) + ' trillion, ' + self.int_to_en(
-                num % t)
-
+            self.exit_text.setText(" Ошибка: выбор опций некорректен ")
             # ======================= Ua section ===============
 
     ua_units = (u'нуль', (u'одна', u'одна'), (u'два', u'дві'), u'три', u'чотири',
