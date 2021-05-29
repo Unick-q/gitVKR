@@ -732,7 +732,7 @@ class Application(QWidget):
             return float_noun
 
         
-        def correct_ord_noun(self, endstr, noun, num): #порядковое числительное 
+        def correct_ord_num(self, endstr, noun, num): #порядковое числительное 
             noun = morph.parse(noun)[0]
             result = [] 
             olo = re.split(" ",endstr)
@@ -1222,7 +1222,7 @@ class Application(QWidget):
             return float_noun
 
         
-        def correct_ord_noun(self, endstr, noun, num): #порядковое числительное 
+        def correct_ord_num(self, endstr, noun, num): #порядковое числительное 
             noun = morph_ua.parse(noun)[0]
             result = [] 
             olo = re.split(" ",endstr)
@@ -1679,23 +1679,10 @@ class Application(QWidget):
 
     def convert(self):  # переделать 
         self.exit_text.setText("")
-
-        self.number = []
-
-        self.insert_number = self.insert_number_line.text().replace(',', '.')
-        
-
-        for arg in self.insert_number.split("."):
-            self.number.append(arg)
-        if (len(self.number)) == 1:
-            self.number.append("00")
-        if self.number[1] == '':
-            self.number[1] = "00"
-        if self.number[0] == '':
-            self.number[0] = "00"
+        # self.insert_number = self.insert_number_line.text().replace(',', '.')
 
         if self.language.currentText() == "Ua":
-            self.convert_ua(self.number)
+            self.convert_ua()
         
         if self.language.currentText() == "Ru":
             self.convert_ru()
@@ -1712,7 +1699,7 @@ class Application(QWidget):
         match = re.match("[а-яА-Я]-", text)
         return bool(match)
 
-    def convert_ua(self, number):
+    def convert_ua(self):
         """General Ua func"""
         noun = self.insert_noun_line 
         num = self.insert_number_line.text()
@@ -1772,7 +1759,7 @@ class Application(QWidget):
                     ordinal_num = self.ua.number_to_words(self.ua.ordinal_ua(int_num)) #порядковые
                     num_2 = (self.ua.end_way(self.ua.type_num(int_num),self.ua.corr_num(ordinal_num),int_num)) #порядковые
                     self.exit_text.append("|-------------------------------------------------|")
-                    self.exit_text.append(" Порядковое числительное + сущ.: " + self.ua.correct_ord_noun(num_2,noun_ord_res,int_num))
+                    self.exit_text.append(" Порядковое числительное + сущ.: " + self.ua.correct_ord_num(num_2,noun_ord_res,int_num))
                     self.exit_text.append("|-------------------------------------------------|")
                     self.exit_text.append("         Склонение числительного по падежам:       ")
                     self.exit_text.append("|-------------------------------------------------|")
@@ -1911,7 +1898,7 @@ class Application(QWidget):
                     ordinal_num = self.rus.number_to_words(self.rus.ordinal(int_num)) #порядковые
                     num_2 = (self.rus.end_way(self.rus.type_num(int_num),self.rus.corr_num(ordinal_num),int_num)) #порядковые
                     self.exit_text.append("|-------------------------------------------------|")
-                    self.exit_text.append(" Порядковое числительное + сущ.: " + self.rus.correct_ord_noun(num_2,noun_ord_res,int_num))
+                    self.exit_text.append(" Порядковое числительное + сущ.: " + self.rus.correct_ord_num(num_2,noun_ord_res,int_num))
                     self.exit_text.append("|-------------------------------------------------|")
                     self.exit_text.append("         Склонение числительного по падежам:       ")
                     self.exit_text.append("|-------------------------------------------------|")
