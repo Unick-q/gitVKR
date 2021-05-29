@@ -3,8 +3,7 @@ import ast
 import re
 import pymorphy2
 import decimal
-from float_nums import in_words
-from float_nums import rubles
+from decimal import Decimal
 from typing import Dict, Union
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
@@ -122,19 +121,17 @@ ten = [
     "семьдесят","восемьдесят","девяносто",
 ]
 
-# апостроф изменить
-
 ten_ua = [
     "",
     "","двадцять","тридцять",
-    "сорок","пятдесят","шістдесят",
-    "сімдесят","вісімдесят","девяносто",
+    "сорок","п'ятдесят","шістдесят",
+    "сімдесят","вісімдесят","дев'яносто",
 ]
 
 hundred = [
     "","сто","двести","триста","четыреста","пятьсот","шестьсот","семьсот","восемьсот","девятьсот",
 ]
-
+# апостроф изменить
 hundred_ua = [
     "","сто","двісті","триста","чотириста","пятсот","шістсот","сімсот","вісімсот","девятсот",
 ]
@@ -147,13 +144,100 @@ mill_ua = [
     ""," тисяча"," мільйон"," мільярд"," трильйон"," квадрильйон"," квінтильйон"
 ]
 
+only_plur = [
+    "окуляри","двері","гроші","лапки","вила","ковзани","сани","терези","куранти"
+    ,"вершки","консерви","діти","копалини","сутінки","заробітки","шахи","шашки"
+]
+
+FRACTIONS = (
+            (u"десятая", u"десятых", u"десятых"),
+            (u"сотая", u"сотых", u"сотых"),
+            (u"тысячная", u"тысячных", u"тысячных"),
+            (u"десятитысячная", u"десятитысячных", u"десятитысячных"),
+            (u"стотысячная", u"стотысячных", u"стотысячных"),
+            (u"миллионная", u"милллионных", u"милллионных"),
+            (u"десятимиллионная", u"десятимилллионных", u"десятимиллионных"),
+            (u"стомиллионная", u"стомилллионных", u"стомиллионных"),
+            (u"миллиардная", u"миллиардных", u"миллиардных"),
+            ) 
+
+FRACTIONS_UA = (
+    (u"десята", u"десятих", u"десятих"),
+    (u"сотих", u"сотих", u"сотих"),
+    (u"тисячна", u"тисячних", u"тисячних"),
+    (u"десятитисячна", u"десятитисячних", u"десятитисячних"),
+    (u"стотисячна", u"стотисячних", u"стотисячних"),
+    (u"мільйонна", u"міллліонних", u"міллліонних"),
+    (u"десятимільйонна", u"десятіміллліонних", u"десятіміллліонних"),
+    (u"стомільйонна", u"стоміллліонних", u"стоміллліонних"),
+    (u"мільярдна", u"мільярдних", u"мільярдних"),
+    ) 
+
+ONES = {
+    0: (u"",       u"",       u""),
+    1: (u"один",   u"одна",   u"одно"),
+    2: (u"два",    u"две",    u"два"),
+    3: (u"три",    u"три",    u"три"),
+    4: (u"четыре", u"четыре", u"четыре"),
+    5: (u"пять",   u"пять",   u"пять"),
+    6: (u"шесть",  u"шесть",  u"шесть"),
+    7: (u"семь",   u"семь",   u"семь"),
+    8: (u"восемь", u"восемь", u"восемь"),
+    9: (u"девять", u"девять", u"девять"),
+    } 
+
+ONES_UA = {
+    0: (u"",       u"",       u""),
+    1: (u"один",   u"одна",   u"одне"),
+    2: (u"два",    u"дві",    u"два"),
+    3: (u"три",    u"три",    u"три"),
+    4: (u"чотири", u"чотири", u"чотири"),
+    5: (u"п'ять",   u"п'ять",   u"п'ять"),
+    6: (u"шість",  u"шість",  u"шість"),
+    7: (u"сім",   u"сім",   u"сім"),
+    8: (u"вісім", u"вісім", u"вісім"),
+    9: (u"дев'ять", u"дев'ять", u"дев'ять"),
+    } 
+
+TENS = {
+    0: u"",
+    10: u"десять",11: u"одиннадцать",12: u"двенадцать",13: u"тринадцать",
+    14: u"четырнадцать",15: u"пятнадцать",16: u"шестнадцать",17: u"семнадцать",
+    18: u"восемнадцать",19: u"девятнадцать",2: u"двадцать",3: u"тридцать",4: u"сорок",
+    5: u"пятьдесят",6: u"шестьдесят",7: u"семьдесят",8: u"восемьдесят",9: u"девяносто",
+    }  
+
+TENS_UA = {
+    0: u"",
+    10: u"десять",11: u"одинадцять",12: u"дванадцять",13: u"тринадцять",
+    14: u"чотирнадцять",15: u"п'ятнадцять",16: u"шістнадцять",17: u"сімнадцять",
+    18: u"вісімнадцять",19: u"дев'ятнадцять",2: u"двадцять",3: u"тридцять",4: u"сорок",
+    5: u"п'ятдесят",6: u"шістдесят",7: u"сімдесят",8: u"вісімдесят",9: u"дев'яносто",
+    }  
+
+HUNDREDS = {
+    0: u"",1: u"сто",2: u"двести",3: u"триста",
+    4: u"четыреста",5: u"пятьсот",6: u"шестьсот",
+    7: u"семьсот",8: u"восемьсот",9: u"девятьсот",
+    }  
+
+HUNDREDS_UA = {
+    0: u"",1: u"сто",2: u"двісті",3: u"триста",
+    4: u"чотириста",5: u"п'ятсот",6: u"шістсот",
+    7: u"сімсот",8: u"вісімсот",9: u"дев'ятсот",
+    }  
+
+MALE = 1   
+FEMALE = 2  
+NEUTER = 3  
+
 class BadChunkingOptionError(Exception):
     pass
 
 class NumOutOfRangeError(Exception):
     pass
 
-class Example(QWidget):
+class Application(QWidget):
     class ru_engine:
         def ordinal(self, num):
             """
@@ -940,7 +1024,6 @@ class Example(QWidget):
                 if group == 0 and first:
                     chunk = re.sub(r", (\S+)\s+\Z", " %s \\1" % andword, chunk)
                 chunk = re.sub(r"\s+", self.spacefn, chunk)
-                # chunk = re.sub(r"(\A\s|\s\Z)", self.blankfn, chunk)
                 chunk = chunk.strip()
                 if first:
                     first = ""
@@ -1052,16 +1135,18 @@ class Example(QWidget):
                     if num % 100 in [11]:
                         if typeinf == 'accs':
                             noun_res = noun_res.inflect({'gent','plur'}).word # сущ.
-                        noun_res = noun_res.inflect({typeinf,'plur'}).word # сущ.
+                        else:
+                            noun_res = noun_res.inflect({typeinf,'plur'}).word # сущ.
+                        pup[x] = morph_ua.parse(pup[x])[0].inflect({typeinf}).word #числит.
                     else:
                         noun_res = noun_res.inflect({typeinf}).word # сущ.
-                    pup[x] = morph_ua.parse(pup[x])[0].inflect({typeinf}).word #числит.
+                        pup[x] = morph_ua.parse(pup[x])[0].inflect({typeinf,gen}).word #числит.
                 else:
                     if num % 10 == 2 and num % 100 not in [12]:
                         if gen is None:
-                            print("First",pup[x])
+                            # print("First",pup[x])
                             pup[x] = morph_ua.parse(pup[x])[0].inflect({typeinf}).word #числит.
-                            print("Second",pup[x])
+                            # print("Second",pup[x])
                         else:
                             pup[x] = morph_ua.parse(pup[x])[0].inflect({typeinf,gen}).word #числит.
                     elif num % 10 == 3 and num % 100 not in [13] and x == rang - 1: 
@@ -1076,9 +1161,21 @@ class Example(QWidget):
                         elif typeinf == 'loct':
                             pup[x] = 'трьох'
                     else:
+                        # print("Third",pup[x])
                         pup[x] = morph_ua.parse(pup[x])[0].inflect({typeinf}).word #числит.
-                    if gen is None and typeinf == 'accs':
+                    if gen is None and typeinf == 'accs' and noun_res.word != 'діти':
                         noun_res = noun_res.inflect({'gent'}).word # сущ.
+                    elif noun_res.word == 'діти':
+                        if typeinf == 'gent':
+                            noun_res = 'дітей'
+                        elif typeinf == 'datv':
+                            noun_res = 'дітям'
+                        elif typeinf == 'accs': 
+                            noun_res = 'дітей'  
+                        elif typeinf == 'ablt':
+                            noun_res = 'дітьми'
+                        elif typeinf == 'loct':
+                            noun_res = 'дітях'
                     else:
                         noun_res = noun_res.inflect({typeinf,'plur'}).word # сущ.
                 result = "{}".format(" ".join(pup))
@@ -1103,21 +1200,21 @@ class Example(QWidget):
         def inflect_float_num_noun(self, noun, endstr, typeinf):
             result = []
             tyt = re.split(" ",endstr)
-            print(endstr)
-            if endstr == 'одна целая пять десятых':
+            if endstr == "одна ціла п'ять десятих":
                 tyt = 'півтора'
                 noun_res = morph_ua.parse(noun)[0]
                 gen = noun_res.tag.gender 
-                tyt = morph_ua.parse(morph_ua.parse(tyt)[0].inflect({gen}).word)[0].inflect({typeinf}).word
-                noun_res = noun_res.inflect({typeinf}).word
+                if typeinf == 'gent' or typeinf == 'accs':
+                    noun_res = noun_res.inflect({'gent'}).word
+                else:
+                    noun_res = noun_res.inflect({typeinf,'plur'}).word
                 float_noun = " ".join((tyt, noun_res))
             else:
                 for x in range(len(tyt)): 
                     noun_res = morph_ua.parse(noun)[0]
                     if ('accs' in typeinf) and (tyt[x] == 'десятих'): 
                         tyt[x] = 'десятих'
-                    else:
-                        print(tyt[x])
+                    else: 
                         tyt[x] = morph_ua.parse(tyt[x])[0].inflect({typeinf}).word
                     noun_res = noun_res.inflect({"gent"}).word
                     result = "{}".format(" ".join(tyt))
@@ -1149,11 +1246,14 @@ class Example(QWidget):
             what_gen = nrm_form.tag.gender
             result = []
             aka = re.split(" ",endstr) 
-            if (('Pltm' in noun_res.tag) and (num % 10 in digits) or (('anim' in noun_res.tag) and ('gent' in noun_res.tag or 'accs' in noun_res.tag) and ('plur' in noun_res.tag) and (num % 10 in digits))): #нужно брать 2-5 числа и менять на собирательные
+            if (('Pltm' in noun_res.tag) and (num % 10 in digits) or ((noun_res.word in only_plur) and (num % 10 in digits))): #нужно брать 2-5 числа и менять на собирательные
                 num %= 10
                 aka[len(aka) - 1] = unit_coll_ua[num-1] #тут error
                 result = "{}".format(" ".join(aka))
-                noun_res = noun_res.inflect({'plur','gent'}).word
+                if noun_res.word == 'діти':
+                    noun_res = 'дітей'
+                else:
+                    noun_res = noun_res.inflect({'plur','gent'}).word
             else: #Склоняем 1,2 в конце числительного + существителное 
                 if aka[len(aka) - 1] == 'один' or aka[len(aka) - 1] == 'два':
                     aka[len(aka) - 1] = morph_ua.parse(aka[len(aka) - 1])[0].inflect({what_gen}).word
@@ -1161,35 +1261,349 @@ class Example(QWidget):
                 else:
                     result = endstr
             noun_res = morph_ua.parse(noun)[0]
-            if num % 10 == 1:
+            if num % 10 == 1 and noun_res.word != 'діти':
                 if num % 100 == 11:
                     noun_res = noun_res.inflect({'gent','plur'}).word 
                 else:
                     noun_res = noun_res.inflect({'nomn','plur'}).word   
-            elif (num % 10 in [2,3,4]) and ('Pltm' not in noun_res.tag):
+            elif (num % 10 in [2,3,4]) and (noun_res.word not in only_plur):
                 if num % 100 in [12,13,14]:
                     noun_res = noun_res.inflect({'gent','plur'}).word
                 else:
                     noun_res = noun_res.inflect({'nomn','plur'}).word 
             else:
-                noun_res = noun_res.inflect({'gent','plur'}).word
+                if noun_res.word == 'діти':
+                    noun_res = 'дітей'
+                else:
+                    noun_res = noun_res.inflect({'gent','plur'}).word
             total_2 = " ".join((result, noun_res))
             return total_2
+
+#--------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------
+    class float_nums():
+        def check_length(self, value, length):
+            """
+            Checks length of value
+            @param value: value to check
+            @type value: C{str}
+            @param length: length checking for
+            @type length: C{int}
+            @return: None when check successful
+            @raise ValueError: check failed
+            """
+            _length = len(value)
+            if _length != length:
+                raise ValueError("length must be %d, not %d" % \
+                                (length, _length))
+
+
+        def check_positive(self, value, strict=False):
+            """
+            Checks if variable is positive
+            @param value: value to check
+            @type value: C{integer types}, C{float} or C{Decimal}
+            @return: None when check successful
+            @raise ValueError: check failed
+            """
+            if not strict and value < 0:
+                raise ValueError("Value must be positive or zero, not %s" % str(value))
+            if strict and value <= 0:
+                raise ValueError("Value must be positive, not %s" % str(value))
+
+
+        def split_values(self, ustring, sep=u','):
+            """
+            Splits unicode string with separator C{sep},
+            but skips escaped separator.
+            
+            @param ustring: string to split
+            @type ustring: C{unicode}
+            
+            @param sep: separator (default to u',')
+            @type sep: C{unicode}
+            
+            @return: tuple of splitted elements
+            """
+            assert isinstance(ustring, str), "Должно быть unicode, not %s" % type(ustring)
+            ustring_marked = ustring.replace(u'\,', u'\uffff')
+            items = tuple([i.strip().replace(u'\uffff', u',') for i in ustring_marked.split(sep)])
+            return items
+
+        def _get_float_remainder(self, fvalue, typeindf, signs=9):
+            self.check_positive(fvalue)
+            if isinstance(fvalue, int):
+                return "0"
+            if isinstance(fvalue, Decimal) and fvalue.as_tuple()[2] == 0:
+                # Decimal.as_tuple() -> (sign, digit_tuple, exponent)
+                # если экспонента "0" -- значит дробной части нет
+                return "0"
+            if typeindf == False: #Ua
+                signs = min(signs, len(FRACTIONS_UA))
+            elif typeindf == True: #Ru
+                signs = min(signs, len(FRACTIONS))
+            # нужно remainder в строке, потому что дробные X.0Y
+            # будут "ломаться" до X.Y
+            remainder = str(fvalue).split('.')[1]
+            iremainder = int(remainder)
+            orig_remainder = remainder
+            factor = len(str(remainder)) - signs
+            if factor > 0:
+                # после запятой цифр больше чем signs, округляем
+                iremainder = int(round(iremainder / (10.0**factor)))
+            format = "%%0%dd" % min(len(remainder), signs)
+            remainder = format % iremainder
+            if len(remainder) > signs:
+                # при округлении цифр вида 0.998 ругаться
+                raise ValueError("Signs overflow: I can't round only fractional part \
+                                of %s to fit %s in %d signs" % \
+                                (str(fvalue), orig_remainder, signs))
+            return remainder
+
+
+        def choose_plural(self, amount, variants): 
+            if isinstance(variants, str):
+                variants = self.split_values(variants)
+            self.check_length(variants, 3)
+            amount = abs(amount)
+            if amount % 10 == 1 and amount % 100 != 11:
+                variant = 0
+            elif amount % 10 >= 2 and amount % 10 <= 4 and \
+                (amount % 100 < 10 or amount % 100 >= 20):
+                variant = 1
+            else:
+                variant = 2
+            return variants[variant]
+
+
+        def money(self, amount, typeindf,  zero_for_kopeck=False):
+            self.check_positive(amount)
+            pts = []
+            amount = round(amount, 2)
+            if typeindf == False: #Ua
+                pts.append(self.sum_string_ua(int(amount), 1, (u"гривня", u"гривні", u"гривень")))
+                remainder = self._get_float_remainder(amount,typeindf, 2)
+                iremainder = int(remainder)
+                if iremainder != 0 or zero_for_kopeck:
+                    # если 3.1, то это 10 копеек, а не одна
+                    if iremainder < 10 and len(remainder) == 1:
+                        iremainder *= 10
+                    pts.append(self.sum_string_ua(iremainder, 2,
+                                        (u"копійка", u"копійки", u"копійок")))
+            elif typeindf == True: #Ru
+                pts.append(self.sum_string(int(amount), 1, (u"рубль", u"рубля", u"рублей")))
+                remainder = self._get_float_remainder(amount,typeindf, 2)
+                iremainder = int(remainder)
+                if iremainder != 0 or zero_for_kopeck:
+                    # если 3.1, то это 10 копеек, а не одна
+                    if iremainder < 10 and len(remainder) == 1:
+                        iremainder *= 10
+                    pts.append(self.sum_string(iremainder, 2,
+                                        (u"копейка", u"копейки", u"копеек")))
+            return u" ".join(pts)
+
+        def in_words_float(self, amount, typeindf, _gender=FEMALE):
+            self.check_positive(amount)
+            pts = []
+            if typeindf == False: #Ua
+                # преобразуем целую часть
+                pts.append(self.sum_string_ua(int(amount), 2,
+                                    (u"ціла", u"цілих", u"цілих")))
+                # теперь то, что после запятой
+                remainder = self._get_float_remainder(amount,typeindf)
+                signs = len(str(remainder)) - 1
+                pts.append(self.sum_string_ua(int(remainder), 2, FRACTIONS_UA[signs]))
+            elif typeindf == True: #Ru
+                # преобразуем целую часть
+                pts.append(self.sum_string(int(amount), 2,
+                                    (u"целая", u"целых", u"целых")))
+                # теперь то, что после запятой
+                remainder = self._get_float_remainder(amount,typeindf)
+                signs = len(str(remainder)) - 1
+                pts.append(self.sum_string(int(remainder), 2, FRACTIONS[signs]))
+            else:
+                raise TypeError("Что-то пошло не так")
+            return u" ".join(pts)
+
+        def in_words(self, amount, typeindf=True, gender=None):
+            self.check_positive(amount)
+            if gender is None:
+                args = (amount,)
+            else:
+                args = (amount, gender)
+            # если дробное
+            if isinstance(amount, (float, Decimal)):
+                return self.in_words_float(*args, typeindf)
+            else:
+                # до сюда не должно дойти
+                raise TypeError("Число должно быть не целое, получили %s" % type(amount))
+
+
+        def sum_string(self, amount, gender, items=None):
+            if isinstance(items, str):
+                items = self.split_values(items)
+            if items is None:
+                items = (u"", u"", u"")
+            try:
+                one_item, two_items, five_items = items
+            except ValueError:
+                raise ValueError("Цепь должна быть 3х элементная")
+            self.check_positive(amount)
+            if amount == 0:
+                if five_items:
+                    return u"ноль %s" % five_items
+                else:
+                    return u"ноль"
+            into = u''
+            tmp_val = amount
+            # единицы
+            into, tmp_val = self._sum_string_fn(into, tmp_val, gender, items)
+            # тысячи
+            into, tmp_val = self._sum_string_fn(into, tmp_val, FEMALE,
+                                            (u"тысяча", u"тысячи", u"тысяч"))
+            # миллионы
+            into, tmp_val = self._sum_string_fn(into, tmp_val, MALE,
+                                            (u"миллион", u"миллиона", u"миллионов"))
+            # миллиарды
+            into, tmp_val = self._sum_string_fn(into, tmp_val, MALE,
+                                            (u"миллиард", u"миллиарда", u"миллиардов"))
+            if tmp_val == 0:
+                return into
+            else:
+                raise ValueError("Слишком большое число")
+
+        def sum_string_ua(self, amount, gender, items=None):
+            if isinstance(items, str):
+                items = self.split_values(items)
+            if items is None:
+                items = (u"", u"", u"")
+            try:
+                one_item, two_items, five_items = items
+            except ValueError:
+                raise ValueError("Цепь должна быть 3х элементная")
+            self.check_positive(amount)
+            if amount == 0:
+                if five_items:
+                    return u"ноль %s" % five_items
+                else:
+                    return u"ноль"
+            into = u''
+            tmp_val = amount
+            # единицы
+            into, tmp_val = self._sum_string_fn_ua(into, tmp_val, gender, items)
+            # тысячи
+            into, tmp_val = self._sum_string_fn_ua(into, tmp_val, FEMALE,
+                                            (u"тысяча", u"тисячі", u"тысяч"))
+            # миллионы
+            into, tmp_val = self._sum_string_fn_ua(into, tmp_val, MALE,
+                                            (u"мільйон", u"мільйона", u"мільйонів"))
+            # миллиарды
+            into, tmp_val = self._sum_string_fn_ua(into, tmp_val, MALE,
+                                            (u"мільярд", u"мільярда", u"мільярдів"))
+            if tmp_val == 0:
+                return into
+            else:
+                raise ValueError("Слишком большое число")
+
+        def _sum_string_fn(self, into, tmp_val, gender, items=None):
+            if items is None:
+                items = (u"", u"", u"")
+            one_item, two_items, five_items = items
+            self.check_positive(tmp_val)
+            if tmp_val == 0:
+                return into, tmp_val
+            words = []
+            rest = tmp_val % 1000
+            tmp_val = tmp_val // 1000
+            if rest == 0:
+                # последние три знака нулевые
+                if into == u"":
+                    into = u"%s " % five_items
+                return into, tmp_val
+            # начинаем подсчет с rest
+            end_word = five_items
+            # сотни
+            words.append(HUNDREDS[rest // 100])
+            # десятки
+            rest = rest % 100
+            rest1 = rest // 10
+            # особый случай -- tens=1
+            tens = rest1 == 1 and TENS[rest] or TENS[rest1]
+            words.append(tens)
+            # единицы
+            if rest1 < 1 or rest1 > 1:
+                amount = rest % 10
+                end_word = self.choose_plural(amount, items)
+                words.append(ONES[amount][gender-1])
+            words.append(end_word)
+            # добавляем то, что уже было
+            words.append(into)
+            # убираем пустые подстроки
+            words = filter(lambda x: len(x) > 0, words)
+            # склеиваем и отдаем
+            return u" ".join(words).strip(), tmp_val
+
+
+        def _sum_string_fn_ua(self, into, tmp_val, gender, items=None):
+            if items is None:
+                items = (u"", u"", u"")
+            one_item, two_items, five_items = items
+            self.check_positive(tmp_val)
+            if tmp_val == 0:
+                return into, tmp_val
+            words = []
+            rest = tmp_val % 1000
+            tmp_val = tmp_val // 1000
+            if rest == 0:
+                # последние три знака нулевые
+                if into == u"":
+                    into = u"%s " % five_items
+                return into, tmp_val
+            # начинаем подсчет с rest
+            end_word = five_items
+            # сотни
+            words.append(HUNDREDS_UA[rest // 100])
+            # десятки
+            rest = rest % 100
+            rest1 = rest // 10
+            # особый случай -- tens=1
+            tens = rest1 == 1 and TENS_UA[rest] or TENS_UA[rest1]
+            words.append(tens)
+            # единицы
+            if rest1 < 1 or rest1 > 1:
+                amount = rest % 10
+                end_word = self.choose_plural(amount, items)
+                words.append(ONES_UA[amount][gender-1])
+            words.append(end_word)
+            # добавляем то, что уже было
+            words.append(into)
+            # убираем пустые подстроки
+            words = filter(lambda x: len(x) > 0, words)
+            # склеиваем и отдаем
+            return u" ".join(words).strip(), tmp_val
+
+
+#--------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------
 
     def __init__(self):
         super().__init__()
         self.rus = self.ru_engine()
         self.ua = self.ua_engine()
+        self.fln = self.float_nums()
 
         # start button
         self.go_button = QPushButton('&Start')
 
-        # line for inserting
-        # self.insert_number_line = QDoubleSpinBox()
-        # self.insert_number_line.setRange(0, 2147483647)
-        # self.insert_number_line.editingFinished.connect(self.convert)
-
-        # for testing validator==================
+        # validator
         self.insert_number_line = QLineEdit()
         self.validator = QRegExpValidator(QRegExp(r'\d{1,7}\.\d{1,2}'), self)
         self.insert_number_line.setValidator(self.validator)
@@ -1213,7 +1627,6 @@ class Example(QWidget):
 
         # exit text
         self.exit_text = QTextEdit()
-        # self.exit_text.setEnabled(0)
 
         self.initui()
 
@@ -1311,56 +1724,13 @@ class Example(QWidget):
                 self.exit_text.append("|--------------------------------------|")
                 self.exit_text.append("           Числительное в валюте:           ")
                 self.exit_text.append("|--------------------------------------|")
-                coin = number[1]
-                if int(coin) > 9:
-                    coin = coin[1]
-                coin = int(coin)
-
-                if int(number[0]) == 1 and int(number[1]) == 0:
-                    self.exit_text.setText("одна гривня")
-                elif (int(number[0][-1]) == 2  or int(number[0][-1]) == 3 or int(number[0][-1]) == 4) and int(number[1]) == 0:
-                    self.exit_text.setText(self.int_to_ua(int(number[0])) + " гривні")
-                else:
-                    self.exit_text.setText(
-                    self.int_to_ua(int(number[0])) + " гривень")
-
-                    self.uah = self.exit_text.toPlainText()
-
-                    if int(number[0]) == 0 and int(number[1]) != 0:
-                        if coin == 1 and int(number[1]) != 11:
-                            self.exit_text.setText(self.int_to_ua(int(number[1])) + " копійка")
-                        elif int(coin) == 4 or int(coin) == 3 or int(coin) == 2:
-                            if int(number[1]) == 14 or int(number[1]) == 13 or int(number[1]) == 12 or int(number[1]) == 11:
-                                self.exit_text.setText(self.int_to_ua(int(number[1])) + " копійок")
-                            else:
-                                self.exit_text.setText(self.int_to_ua(int(number[1])) + " копійки")
-                        else:
-                            self.exit_text.setText(self.int_to_ua(int(number[1])) + " копійок")
-                    else:
-                        if coin == 1 and int(number[1]) != 11:
-                            self.exit_text.setText(
-                                self.uah + " та " +
-                                self.int_to_ua(int(number[1])) + " копійка")
-                        elif int(coin) == 4 or int(coin) == 3 or int(coin) == 2:
-                            if int(number[1]) == 14 or int(number[1]) == 13 or int(number[1]) == 12 or int(number[1]) == 11:
-                                self.exit_text.setText(
-                                    self.uah + " та " +
-                                    self.int_to_ua(int(number[1])) + " копійок")
-                            else:
-                                self.exit_text.setText(
-                                    self.uah + " та " +
-                                    self.int_to_ua(int(number[1])) + " копійки")
-                        else:
-                            if int(number[1]) != 0:
-                                self.exit_text.setText(
-                                    self.uah + " та " +
-                                    self.int_to_ua(int(number[1])) + " копійок")
+                self.exit_text.append("Значение в рублях: " + self.fln.money(float(num),False))
             else:
                 self.exit_text.setText(" Ошибка: Ввод некорректен")
         elif self.what_number_1.isChecked() or self.what_number_2.isChecked() or self.what_number_3.isChecked() and self.what_number_4.checkState() == Qt.Unchecked:
             if self.num_is_ok(str(self.insert_number_line.text())) == True:
                 if '.' in num and self.what_number_1.isChecked() and self.what_number_2.checkState() == Qt.Unchecked and self.what_number_3.checkState() == Qt.Unchecked: # дробные значения
-                    num_1 = in_words(float(num))
+                    num_1 = self.fln.in_words(float(num),False)
                     self.exit_text.append("|--------------------------------------|")
                     self.exit_text.append("   Склонение дробного числительного по падежам:  ")
                     self.exit_text.append("|--------------------------------------|")
@@ -1491,7 +1861,7 @@ class Example(QWidget):
                 self.exit_text.append("|--------------------------------------|")
                 self.exit_text.append("           Числительное в валюте:           ")
                 self.exit_text.append("|--------------------------------------|")
-                self.exit_text.append("Значение в рублях: " + rubles(float(num)))
+                self.exit_text.append("Значение в рублях: " + self.fln.money(float(num),True))
             else:
                 self.exit_text.setText(" Ошибка: Ввод некорректен")
         elif self.what_number_1.isChecked() or self.what_number_2.isChecked() or self.what_number_3.isChecked() and self.what_number_4.checkState() == Qt.Unchecked:
@@ -1499,7 +1869,7 @@ class Example(QWidget):
                 if 'Pltm' not in noun.tag:
                     noun_ord_res = noun.inflect({'sing'}).word
                 if '.' in num and self.what_number_1.isChecked() and self.what_number_2.checkState() == Qt.Unchecked and self.what_number_3.checkState() == Qt.Unchecked: # дробные значения
-                    num_1 = in_words(float(num))
+                    num_1 = self.fln.in_words(float(num),True)
                     self.exit_text.append("|--------------------------------------|")
                     self.exit_text.append("   Склонение дробного числительного по падежам:  ")
                     self.exit_text.append("|--------------------------------------|")
@@ -1593,95 +1963,9 @@ class Example(QWidget):
                 self.exit_text.setText(" Ошибка: Ввод некорректен")
         else:
             self.exit_text.setText(" Ошибка: выбор опций некорректен ")
-            # ======================= Ua section ===============
-
-    ua_units = (u'нуль', (u'одна', u'одна'), (u'два', u'дві'), u'три', u'чотири',
-             u"п'ять", u'шість', u'сім', u'вісім', u"дев'ять")
-
-    teens = (u'десять', u'одинадцять', u'дванадцять', u'тринадцять',
-             u'чотирнадцять', u"п'ятнадцять", u'шістнадцять', u'сімнадцять',
-             u'вісімнадцять', u"дев'ятнадцять")
-
-    tens = (teens, u'двадцять', u'тридцять', u'сорок', u'пятдесят',
-            u'шістдесят', u'сімдесят', u'вісімдесят', u"дев'яносто")
-
-    hundreds = (u'сто', u'двісті', u'триста', u'чотириста', u"п'ятсот",
-                u'шістсот', u'сімсот', u'вісімсот', u"дев'ятсот")
-
-    orders = (
-        ((u'тисяча', u'тисячі', u'тисяч'), 'f'),
-        ((u'мільйон', u'мільйона', u'мільйонів'), 'm'),
-        ((u'мільярд', u'мільярда', u'мільярдів'), 'm'),
-    )
-
-    def thousand(self, rest, sex):
-        """Converts numbers from 19 to 999"""
-        prev = 0
-        plural = 2
-        name = []
-        use_teens = 10 <= rest % 100 <= 19
-        if not use_teens:
-            data = ((self.ua_units, 10), (self.tens, 100), (self.hundreds, 1000))
-        else:
-            data = ((self.tens, 10), (self.hundreds, 1000))
-        for names, x in data:
-            cur = int(((rest - prev) % x) * 10 / x)
-            prev = rest % x
-            if x == 10 and use_teens:
-                plural = 2
-                name.append(self.teens[cur])
-            elif cur == 0:
-                continue
-            elif x == 10:
-                name_ = names[cur]
-                if isinstance(name_, tuple):
-                    name_ = name_[0 if sex == 'm' else 1]
-                name.append(name_)
-                if cur >= 2 and cur <= 4:
-                    plural = 1
-                elif cur == 1:
-                    plural = 0
-                else:
-                    plural = 2
-            else:
-                name.append(names[cur - 1])
-        return plural, name
-
-    def int_to_ua(self, num, main_units=((u'', u'', u''), 'm')):
-        _orders = (main_units,) + self.orders
-        if num == 0:
-            return ' '.join((self.ua_units[0], _orders[0][0][2])).strip()
-
-        rest = abs(num)
-        ord = 0
-        name = []
-        while rest > 0:
-            plural, nme = self.thousand(rest % 1000, _orders[ord][1])
-            if nme or ord == 0:
-                name.append(_orders[ord][0][plural])
-            name += nme
-            rest = int(rest / 1000)
-            ord += 1
-
-        name.reverse()
-        return ' '.join(name).strip()
-
-    def decimal2text(self,
-                     value,
-                     places=2,
-                     int_units=(('', '', ''), 'm'),
-                     exp_units=(('', '', ''), 'm')):
-        value = decimal.Decimal(value)
-        q = decimal.Decimal(10) ** -places
-
-        integral, exp = str(value.quantize(q)).split('.')
-        return u'{} {}'.format(
-            self.int_to_ua(int(integral), int_units),
-            self.int_to_ua(int(exp), exp_units))
-
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = Example()
+    ex = Application()
     sys.exit(app.exec_())
