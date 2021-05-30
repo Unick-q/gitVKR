@@ -1,16 +1,13 @@
 import sys
-import ast
+import math
 import re
 import pymorphy2
-import decimal
 from decimal import Decimal
-from typing import Dict, Union
-from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
-morph = pymorphy2.MorphAnalyzer()
+morph = pymorphy2.MorphAnalyzer(lang='ru')
 morph_ua = pymorphy2.MorphAnalyzer(lang='uk')
 
 nth = {
@@ -548,8 +545,10 @@ class Application(QWidget):
         
         def type_num(self, num):
             array = []
+            if num < 0:
+                num = abs(num)
             while num:
-                num //=1000
+                num //=1000 #минус добавить
                 if num > 0:
                     array.append(int(num))
             return array
@@ -598,19 +597,21 @@ class Application(QWidget):
                 noun_res = morph.parse(noun)[0]
                 gen = noun_res.tag.gender
                 if ('accs' in typeinf) and ('anim' in noun_res.tag): 
-                    if pup[x] == 'один' and x == rang - 1:
+                    if pup[x] == 'минус':
+                        pup[x] = 'минус'
+                    elif pup[x] == 'один' and x == rang - 1:
                         if 'masc' in noun_res.tag:
                             pup[x] = morph.parse(pup[x])[0].inflect({"gent",'masc'}).word
                         else:
                             pup[x] = morph.parse(pup[x])[0].inflect({"accs",gen}).word
-                    elif num % 10 in [2,3,4]:
+                    elif abs(num) % 10 in [2,3,4]:
                         if 'neut' in noun_res.tag and pup[x] == 'два' and x == rang - 1:
                             pup[x] = morph.parse(pup[x])[0].inflect({"nomn",'masc'}).word
                         else:
                             if 'Pltm' in noun_res.tag:
-                                num %= 10 
-                                if pup[len(pup)-1] == unit[num]: 
-                                    pup[len(pup)-1] = unit_coll[num-1]
+                                num = abs(num) % 10 
+                                if pup[len(pup)-1] == unit[abs(num)]: 
+                                    pup[len(pup)-1] = unit_coll[abs(num)-1]
                             else:
                                 if pup[len(pup)-1] == "два":
                                     pup[len(pup)-1] = morph.parse(pup[len(pup)-1])[0].inflect({"nomn",gen}).word
@@ -625,32 +626,34 @@ class Application(QWidget):
                                 break
                             else:
                                 pup[x] = morph.parse(pup[x])[0].inflect({"accs"}).word
-                    if num % 10 == 1 and num % 100 not in [11]: 
+                    if abs(num) % 10 == 1 and abs(num) % 100 not in [11]: 
                         if 'Pltm' in noun_res.tag: 
                             noun_res = noun_res.inflect({"accs"}).word
                         else:
                             noun_res = noun_res.inflect({"sing","accs",gen}).word
-                    elif num % 10 in [2,3,4]:
+                    elif abs(num) % 10 in [2,3,4]:
                         if 'Pltm' in noun_res.tag:
                             noun_res = noun_res.inflect({"gent"}).word
                         else:
-                            if num % 100 in [12,13,14]:
+                            if abs(num) % 100 in [12,13,14]:
                                 noun_res = noun_res.inflect({"plur","gent"}).word
                             else:
                                 noun_res = noun_res.inflect({"sing","gent"}).word
                     else:
                         noun_res = noun_res.inflect({"plur","gent"}).word
                 elif ('accs' in typeinf) and ('inan' in noun_res.tag):
-                    if pup[x] == 'один' and x == rang - 1:
+                    if pup[x] == 'минус':
+                        pup[x] = 'минус'
+                    elif pup[x] == 'один' and x == rang - 1:
                         if 'masc' in noun_res.tag:
                             pup[x] = morph.parse(pup[x])[0].inflect({"nomn",'masc'}).word
                         else: 
                             pup[x] = morph.parse(pup[x])[0].inflect({"accs",gen}).word
-                    elif num % 10 in [2,3,4]:
+                    elif abs(num) % 10 in [2,3,4]:
                         if 'Pltm' in noun_res.tag:
-                            num %= 10 
-                            if pup[len(pup)-1] == unit[num]: 
-                                pup[len(pup)-1] = unit_coll[num-1]
+                            num = abs(num) % 10 
+                            if pup[len(pup)-1] == unit[abs(num)]: 
+                                pup[len(pup)-1] = unit_coll[abs(num)-1]
                         else:
                             if pup[len(pup)-1] == "два":
                                 pup[len(pup)-1] = morph.parse(pup[len(pup)-1])[0].inflect({"nomn",gen}).word
@@ -665,16 +668,16 @@ class Application(QWidget):
                                 break
                             else:
                                 pup[x] = morph.parse(pup[x])[0].inflect({"accs"}).word
-                    if num % 10 == 1 and num % 100 not in [11]:
+                    if abs(num) % 10 == 1 and abs(num) % 100 not in [11]:
                         if 'Pltm' in noun_res.tag:
                             noun_res = noun_res.inflect({"gent"}).word
                         else:
                             noun_res = noun_res.inflect({"sing","accs"}).word
-                    elif num % 10 in [2,3,4]:
+                    elif abs(num) % 10 in [2,3,4]:
                         if 'Pltm' in noun_res.tag:
                             noun_res = noun_res.inflect({"gent"}).word
                         else:
-                            if num % 100 in [12,13,14]:
+                            if abs(num) % 100 in [12,13,14]:
                                 noun_res = noun_res.inflect({"plur","gent"}).word
                             else:
                                 noun_res = noun_res.inflect({"sing","gent"}).word
@@ -689,6 +692,8 @@ class Application(QWidget):
                             pup[x] = 'ста'
                         elif pup[x] == 'тысячи':
                             pup[x] = morph.parse(pup[x])[0].inflect({typeinf,'plur'}).word
+                        elif pup[x] == 'минус':
+                            pup[x] = 'минус'
                         else:
                             pup[x] = morph.parse(pup[x])[0].inflect({typeinf}).word
                         noun_res = noun_res.inflect({typeinf,"plur"}).word
@@ -696,7 +701,7 @@ class Application(QWidget):
                 total = " ".join((result, noun_res))
             return total
 
-        def inflect_num_noun_2(self, endstr, noun, typeinf): #склонение порядкового
+        def inflect_ord_num_noun(self, endstr, noun, typeinf): #склонение порядкового
             result = []
             mim = re.split(" ",endstr)
             last = morph.parse(mim[len(mim) - 1])[0]
@@ -732,7 +737,7 @@ class Application(QWidget):
             return float_noun
 
         
-        def correct_ord_num(self, endstr, noun, num): #порядковое числительное 
+        def correct_ord_num(self, endstr, noun): #порядковое числительное 
             noun = morph.parse(noun)[0]
             result = [] 
             olo = re.split(" ",endstr)
@@ -755,9 +760,9 @@ class Application(QWidget):
             what_gen = noun_res.tag.gender
             result = []
             aka = re.split(" ",endstr) #изменить что последняя цифра, а не одна цифра
-            if (('Pltm' in noun_res.tag) and (num % 10 in digits) or (('anim' in noun_res.tag) and ('gent' in noun_res.tag or 'accs' in noun_res.tag) and ('plur' in noun_res.tag) and (num % 10 in digits))): #нужно брать 2-10 числа и менять на собирательные
-                num %= 10
-                aka[len(aka) - 1] = unit_coll[num-1] #тут error
+            if (('Pltm' in noun_res.tag) and (abs(num) % 10 in digits) or (('anim' in noun_res.tag) and ('gent' in noun_res.tag or 'accs' in noun_res.tag) and ('plur' in noun_res.tag) and (abs(num) % 10 in digits))): #нужно брать 2-10 числа и менять на собирательные
+                num = abs(num) % 10 
+                aka[len(aka) - 1] = unit_coll[abs(num)-1] #тут error
                 result = "{}".format(" ".join(aka))
                 noun_res = noun_res.inflect({'plur','gent'}).word
             else: #Склоняем 1,2 в конце числительного + существителное 
@@ -766,9 +771,9 @@ class Application(QWidget):
                     result = "{}".format(" ".join(aka))
                 else:
                     result = endstr
-                if num % 10 == 1 and num % 100 != 11:
+                if abs(num) % 10 == 1 and abs(num) % 100 != 11:
                     noun_res = noun_res.inflect({'nomn','sing'}).word   #Возможны ошибки 
-                elif num % 10 in [2,3,4] and (num % 100 < 10 or num % 100 >= 20):
+                elif abs(num) % 10 in [2,3,4] and (abs(num) % 100 < 10 or abs(num) % 100 >= 20):
                     if 'Pltm' in noun_res.tag:
                         noun_res = noun_res.inflect({'gent'}).word
                     else:
@@ -798,7 +803,7 @@ class Application(QWidget):
                             # реализация дробных значений,
                             n = int(num[-1])
 
-                        except ValueError:  # ends with '.', so need to use whole string
+                        except ValueError: 
                             n = int(num[:-1])
                     else:
                         n = int(num)
@@ -1077,6 +1082,8 @@ class Application(QWidget):
         
         def type_num(self, num):
             array = []
+            if num < 0:
+                num = abs(num)
             while num:
                 num //=1000
                 if num > 0:
@@ -1131,25 +1138,31 @@ class Application(QWidget):
             for x in range(len(pup)):
                 noun_res = morph_ua.parse(noun)[0]
                 gen = noun_res.tag.gender
-                if num % 10 == 1:
-                    if num % 100 in [11]:
+                if abs(num) % 10 == 1:
+                    if abs(num) % 100 == [11]:
                         if typeinf == 'accs':
                             noun_res = noun_res.inflect({'gent','plur'}).word # сущ.
                         else:
                             noun_res = noun_res.inflect({typeinf,'plur'}).word # сущ.
-                        pup[x] = morph_ua.parse(pup[x])[0].inflect({typeinf}).word #числит.
+                        if pup[x] == 'мінус':
+                            pup[x] = 'мінус'
+                        else:
+                            pup[x] = morph_ua.parse(pup[x])[0].inflect({typeinf}).word #числит.
                     else:
                         noun_res = noun_res.inflect({typeinf}).word # сущ.
-                        pup[x] = morph_ua.parse(pup[x])[0].inflect({typeinf,gen}).word #числит.
-                else:
-                    if num % 10 == 2 and num % 100 not in [12]:
-                        if gen is None:
-                            # print("First",pup[x])
-                            pup[x] = morph_ua.parse(pup[x])[0].inflect({typeinf}).word #числит.
-                            # print("Second",pup[x])
+                        if pup[x] == 'мінус':
+                            pup[x] = 'мінус'
                         else:
                             pup[x] = morph_ua.parse(pup[x])[0].inflect({typeinf,gen}).word #числит.
-                    elif num % 10 == 3 and num % 100 not in [13] and x == rang - 1: 
+                else:
+                    if abs(num) % 10 == 2 and abs(num) % 100 != 12:
+                        if gen is None:
+                            pup[x] = morph_ua.parse(pup[x])[0].inflect({typeinf}).word #числит.
+                        elif pup[x] == 'мінус':
+                            pup[x] = 'мінус'
+                        else:
+                            pup[x] = morph_ua.parse(pup[x])[0].inflect({typeinf,gen}).word #числит.
+                    elif abs(num) % 10 == 3 and abs(num) % 100 != 13 and x == rang - 1: 
                         if typeinf == 'gent':
                             pup[x] = 'трьох'
                         elif typeinf == 'datv':
@@ -1160,9 +1173,13 @@ class Application(QWidget):
                             pup[x] = 'трьома́'
                         elif typeinf == 'loct':
                             pup[x] = 'трьох'
+                        elif pup[x] == 'мінус':
+                            pup[x] = 'мінус'
                     else:
-                        # print("Third",pup[x])
-                        pup[x] = morph_ua.parse(pup[x])[0].inflect({typeinf}).word #числит.
+                        if pup[x] == 'мінус':
+                            pup[x] = 'мінус'
+                        else:
+                            pup[x] = morph_ua.parse(pup[x])[0].inflect({typeinf}).word #числит.
                     if gen is None and typeinf == 'accs' and noun_res.word != 'діти':
                         noun_res = noun_res.inflect({'gent'}).word # сущ.
                     elif noun_res.word == 'діти':
@@ -1177,12 +1194,12 @@ class Application(QWidget):
                         elif typeinf == 'loct':
                             noun_res = 'дітях'
                     else:
-                        noun_res = noun_res.inflect({typeinf,'plur'}).word # сущ.
+                        noun_res = noun_res.inflect({typeinf}).word # сущ. #Ошибка!!!!
                 result = "{}".format(" ".join(pup))
                 total = " ".join((result, noun_res))
             return total
 
-        def inflect_num_noun_2(self, endstr, noun, typeinf): #склонение порядкового
+        def inflect_ord_num_noun(self, endstr, noun, typeinf): #склонение порядкового
             result = []
             mim = re.split(" ",endstr)
             last = morph_ua.parse(mim[len(mim) - 1])[0]
@@ -1222,7 +1239,7 @@ class Application(QWidget):
             return float_noun
 
         
-        def correct_ord_num(self, endstr, noun, num): #порядковое числительное 
+        def correct_ord_num(self, endstr, noun): #порядковое числительное 
             noun = morph_ua.parse(noun)[0]
             result = [] 
             olo = re.split(" ",endstr)
@@ -1246,9 +1263,9 @@ class Application(QWidget):
             what_gen = nrm_form.tag.gender
             result = []
             aka = re.split(" ",endstr) 
-            if (('Pltm' in noun_res.tag) and (num % 10 in digits) or ((noun_res.word in only_plur) and (num % 10 in digits))): #нужно брать 2-5 числа и менять на собирательные
-                num %= 10
-                aka[len(aka) - 1] = unit_coll_ua[num-1] #тут error
+            if (('Pltm' in noun_res.tag) and (abs(num) % 10 in digits) or ((noun_res.word in only_plur) and (abs(num) % 10 in digits))): #нужно брать 2-5 числа и менять на собирательные
+                num = abs(num) % 10 
+                aka[len(aka) - 1] = unit_coll_ua[abs(num)-1] #тут error
                 result = "{}".format(" ".join(aka))
                 if noun_res.word == 'діти':
                     noun_res = 'дітей'
@@ -1261,21 +1278,43 @@ class Application(QWidget):
                 else:
                     result = endstr
             noun_res = morph_ua.parse(noun)[0]
-            if num % 10 == 1 and noun_res.word != 'діти':
-                if num % 100 == 11:
-                    noun_res = noun_res.inflect({'gent','plur'}).word 
+            if abs(num) % 10 == 1 and noun_res.word != 'діти':
+                if abs(num) % 100 == 11:
+                    if noun_res.tag.number != None:  
+                        noun_res = noun_res.inflect({'gent','plur'}).word   
+                    else:
+                        noun_res = noun_res.inflect({'gent'}).word
                 else:
-                    noun_res = noun_res.inflect({'nomn','plur'}).word   
-            elif (num % 10 in [2,3,4]) and (noun_res.word not in only_plur):
-                if num % 100 in [12,13,14]:
-                    noun_res = noun_res.inflect({'gent','plur'}).word
+                    if noun_res.tag.number != None:  
+                        noun_res = noun_res.inflect({'nomn','plur'}).word 
+                    else:
+                        noun_res = noun_res.inflect({'nomn'}).word   
+            elif (abs(num) % 10 in [2,3,4]) and (noun_res.word not in only_plur):
+                if abs(num) % 100 in [12,13,14]:
+                    if noun_res.tag.number != None:  
+                        noun_res = noun_res.inflect({'gent','plur'}).word   
+                    else:
+                        noun_res = noun_res.inflect({'gent'}).word
                 else:
-                    noun_res = noun_res.inflect({'nomn','plur'}).word 
+                    if abs(num) > 4:
+                        noun_res = noun_res.inflect({'gent'}).word 
+                    else:
+                        if noun_res.tag.number != None:  
+                            noun_res = noun_res.inflect({'nomn','plur'}).word 
+                        else:
+                            if noun_res.tag.gender == 'neut':
+                                noun_res = noun_res.inflect({'gent'}).word
+                            else:
+                                noun_res = noun_res.inflect({'nomn'}).word
             else:
                 if noun_res.word == 'діти':
                     noun_res = 'дітей'
                 else:
-                    noun_res = noun_res.inflect({'gent','plur'}).word
+                    if noun_res.tag.number != None:
+                        noun_res = noun_res.inflect({'gent','plur'}).word   
+                    else:
+                        noun_res = noun_res.inflect({'gent'}).word
+            print(noun_res)
             total_2 = " ".join((result, noun_res))
             return total_2
 
@@ -1735,8 +1774,12 @@ class Application(QWidget):
                     self.exit_text.append("         Склонение числительного по падежам:       ")
                     self.exit_text.append("|-------------------------------------------------|")
                     sob = re.split(" ",self.ua.correct_card_num(int_num,num_1,noun_str))
-                    num_1 = sob[0]
-                    noun_ord_res = sob[1]
+                    if sob[0] == 'мінус':
+                        num_1 = sob[0] + " " + sob[1]
+                        noun_ord_res = sob[2]
+                    else:
+                        num_1 = sob[0]
+                        noun_ord_res = sob[1]
                     for x in range(0, 5):
                         inf = (self.ua.inflect_num_noun(num_1,noun_ord_res,to_inflect[x],int_num))
                         self.exit_text.append(inflect_str_ua[x] + " : " + inf)
@@ -1759,12 +1802,12 @@ class Application(QWidget):
                     ordinal_num = self.ua.number_to_words(self.ua.ordinal_ua(int_num)) #порядковые
                     num_2 = (self.ua.end_way(self.ua.type_num(int_num),self.ua.corr_num(ordinal_num),int_num)) #порядковые
                     self.exit_text.append("|-------------------------------------------------|")
-                    self.exit_text.append(" Порядковое числительное + сущ.: " + self.ua.correct_ord_num(num_2,noun_ord_res,int_num))
+                    self.exit_text.append(" Порядковое числительное + сущ.: " + self.ua.correct_ord_num(num_2,noun_ord_res))
                     self.exit_text.append("|-------------------------------------------------|")
                     self.exit_text.append("         Склонение числительного по падежам:       ")
                     self.exit_text.append("|-------------------------------------------------|")
                     for x in range(0, 5):
-                        inf = (self.ua.inflect_num_noun_2(num_2,noun_ord_res,to_inflect[x]))
+                        inf = (self.ua.inflect_ord_num_noun(num_2,noun_ord_res,to_inflect[x]))
                         self.exit_text.append(inflect_str_ua[x] + " : " + inf)
                     self.exit_text.append("|-------------------------------------------------|")
             elif self.str_is_ok(str(self.insert_number_line.text())) == False: # неопредел колич
@@ -1874,8 +1917,12 @@ class Application(QWidget):
                     self.exit_text.append("         Склонение числительного по падежам:       ")
                     self.exit_text.append("|-------------------------------------------------|")
                     sob = re.split(" ",self.rus.correct_card_num(int_num,num_1,noun_str))
-                    num_1 = sob[0]
-                    noun_ord_res = sob[1]
+                    if sob[0] == 'минус':
+                        num_1 = sob[0] + " " + sob[1]
+                        noun_ord_res = sob[2]
+                    else:
+                        num_1 = sob[0]
+                        noun_ord_res = sob[1]
                     for x in range(0, 5):
                         inf = (self.rus.inflect_num_noun(num_1,noun_ord_res,to_inflect[x],int_num))
                         self.exit_text.append(inflect_str[x] + " : " + inf)
@@ -1898,12 +1945,12 @@ class Application(QWidget):
                     ordinal_num = self.rus.number_to_words(self.rus.ordinal(int_num)) #порядковые
                     num_2 = (self.rus.end_way(self.rus.type_num(int_num),self.rus.corr_num(ordinal_num),int_num)) #порядковые
                     self.exit_text.append("|-------------------------------------------------|")
-                    self.exit_text.append(" Порядковое числительное + сущ.: " + self.rus.correct_ord_num(num_2,noun_ord_res,int_num))
+                    self.exit_text.append(" Порядковое числительное + сущ.: " + self.rus.correct_ord_num(num_2,noun_ord_res))
                     self.exit_text.append("|-------------------------------------------------|")
                     self.exit_text.append("         Склонение числительного по падежам:       ")
                     self.exit_text.append("|-------------------------------------------------|")
                     for x in range(0, 5):
-                        inf = (self.rus.inflect_num_noun_2(num_2,noun_ord_res,to_inflect[x]))
+                        inf = (self.rus.inflect_ord_num_noun(num_2,noun_ord_res,to_inflect[x]))
                         self.exit_text.append(inflect_str[x] + " : " + inf)
                     self.exit_text.append("|-------------------------------------------------|")
             elif self.str_is_ok(str(self.insert_number_line.text())) == False: # неопредел колич
