@@ -44,13 +44,13 @@ ordinal = dict(
     тысяча="тысячный",миллион="миллиoнный",миллиард="миллиaрдный",триллион="триллиoнный",квадриллион="квaдриллионный",квинтиллион="квинтиллиoнный"
 )
 
-ordinal_ua = dict(
-    ty="ий",
-    нуль="нульовий",один="перший",два="другий",три="третій",чотири="четвертий",шість="шостий",сім="сьомий",вісім="восьмий",
-    сорок="сороковий",сімдесят="семидесятий",вісімдесят="восьмидесятих",
-    сто="сотий",двісті="двохсотий",триста="трьохсот",чотириста="чотирьохсотий",пятсот="п'ятисотий",шістсот="шестисотий",сімсот="семисотий",вісімсот="восмісотий",девятсот="дев'ятисотий",
-    тисяча="тисячний",мільйон="мілліoнний",мільярд="мілліaрдний",трильйон="трілліoнний",квадрильйон="квaдрілліонний",квінтильйон="квінтілліoнний"
-)
+ordinal_ua = {
+    "ty":"ий",
+    "нуль":"нульовий","один":"перший","два":"другий","три":"третій","чотири":"четвертий","шість":"шостий","сім":"сьомий","вісім":"восьмий",
+    "сорок":"сороковий","сімдесят":"семидесятий","вісімдесят":"восьмидесятих",
+    "сто":"сотий","двісті":"двохсотий","триста":"трьохсот","чотириста":"чотирьохсотий","п'ятсот":"п'ятисотий","шістсот":"шестисотий","сімсот":"семисотий","вісімсот":"восмісотий","дев'ятсот":"дев'ятисотий",
+    "тисяча":"тисячний","мільйон":"мілліoнний","мільярд":"мілліaрдний","трильйон":"трілліoнний","квадрильйон":"квaдрілліонний","квінтильйон":"квінтілліoнний"
+}
 
 ordinal_tens = dict(
     тысяча="тысячный",миллион="миллиoнный",миллиард="миллиaрдный",триллион="триллиoнный",квадриллион="квaдриллионный",квинтиллион="квинтиллиoнный"
@@ -128,9 +128,9 @@ ten_ua = [
 hundred = [
     "","сто","двести","триста","четыреста","пятьсот","шестьсот","семьсот","восемьсот","девятьсот",
 ]
-# апостроф изменить
+
 hundred_ua = [
-    "","сто","двісті","триста","чотириста","пятсот","шістсот","сімсот","вісімсот","девятсот",
+    "","сто","двісті","триста","чотириста","п'ятсот","шістсот","сімсот","вісімсот","дев'ятсот",
 ]
 
 mill = [
@@ -248,10 +248,9 @@ class Application(QWidget):
                 except TypeError:
                     if "." in str(num):
                         try:
-                            # реализация дробных значений,
                             n = int(num[-1])
 
-                        except ValueError:  # ends with '.', so need to use whole string
+                        except ValueError: 
                             n = int(num[:-1])
                     else:
                         n = int(num)
@@ -548,7 +547,7 @@ class Application(QWidget):
             if num < 0:
                 num = abs(num)
             while num:
-                num //=1000 #минус добавить
+                num //=1000 
                 if num > 0:
                     array.append(int(num))
             return array
@@ -762,7 +761,7 @@ class Application(QWidget):
             aka = re.split(" ",endstr) #изменить что последняя цифра, а не одна цифра
             if (('Pltm' in noun_res.tag) and (abs(num) % 10 in digits) or (('anim' in noun_res.tag) and ('gent' in noun_res.tag or 'accs' in noun_res.tag) and ('plur' in noun_res.tag) and (abs(num) % 10 in digits))): #нужно брать 2-10 числа и менять на собирательные
                 num = abs(num) % 10 
-                aka[len(aka) - 1] = unit_coll[abs(num)-1] #тут error
+                aka[len(aka) - 1] = unit_coll[abs(num)-1]
                 result = "{}".format(" ".join(aka))
                 noun_res = noun_res.inflect({'plur','gent'}).word
             else: #Склоняем 1,2 в конце числительного + существителное 
@@ -772,7 +771,7 @@ class Application(QWidget):
                 else:
                     result = endstr
                 if abs(num) % 10 == 1 and abs(num) % 100 != 11:
-                    noun_res = noun_res.inflect({'nomn','sing'}).word   #Возможны ошибки 
+                    noun_res = noun_res.inflect({'nomn','sing'}).word 
                 elif abs(num) % 10 in [2,3,4] and (abs(num) % 100 < 10 or abs(num) % 100 >= 20):
                     if 'Pltm' in noun_res.tag:
                         noun_res = noun_res.inflect({'gent'}).word
@@ -800,7 +799,6 @@ class Application(QWidget):
                 except TypeError:
                     if "." in str(num):
                         try:
-                            # реализация дробных значений,
                             n = int(num[-1])
 
                         except ValueError: 
@@ -1093,7 +1091,7 @@ class Application(QWidget):
         def end_way(self, array, endstr, num):
             result = []
             if num > 1000 or num < -1000:
-                for i in range(len(array)): #ошибка 
+                for i in range(len(array)):
                     if array[i] == 1 and array[i-1] not in [12,13,14]:
                         result = re.sub(mill_ua[i+1],morph_ua.parse(mill_ua[i+1])[0].inflect({'nomn'}).word, endstr)
                     elif array[i] in [2,3,4] and array[i-1] not in [12,13,14]:
@@ -1194,7 +1192,10 @@ class Application(QWidget):
                         elif typeinf == 'loct':
                             noun_res = 'дітях'
                     else:
-                        noun_res = noun_res.inflect({typeinf}).word # сущ. #Ошибка!!!!
+                        if noun_res.word == 'вікно':
+                            noun_res = 'вікон'
+                            noun_res = morph_ua.parse(noun_res)[0]
+                        noun_res = noun_res.inflect({typeinf}).word # сущ.
                 result = "{}".format(" ".join(pup))
                 total = " ".join((result, noun_res))
             return total
@@ -1265,7 +1266,7 @@ class Application(QWidget):
             aka = re.split(" ",endstr) 
             if (('Pltm' in noun_res.tag) and (abs(num) % 10 in digits) or ((noun_res.word in only_plur) and (abs(num) % 10 in digits))): #нужно брать 2-5 числа и менять на собирательные
                 num = abs(num) % 10 
-                aka[len(aka) - 1] = unit_coll_ua[abs(num)-1] #тут error
+                aka[len(aka) - 1] = unit_coll_ua[abs(num)-1]
                 result = "{}".format(" ".join(aka))
                 if noun_res.word == 'діти':
                     noun_res = 'дітей'
@@ -1309,12 +1310,10 @@ class Application(QWidget):
             else:
                 if noun_res.word == 'діти':
                     noun_res = 'дітей'
+                elif noun_res.word == 'вікно':
+                    noun_res = 'вікон'
                 else:
-                    if noun_res.tag.number != None:
-                        noun_res = noun_res.inflect({'gent','plur'}).word   
-                    else:
-                        noun_res = noun_res.inflect({'gent'}).word
-            print(noun_res)
+                    noun_res = noun_res.inflect({'gent','plur'}).word   
             total_2 = " ".join((result, noun_res))
             return total_2
 
@@ -1327,13 +1326,13 @@ class Application(QWidget):
     class float_nums():
         def check_length(self, value, length):
             """
-            Checks length of value
-            @param value: value to check
-            @type value: C{str}
-            @param length: length checking for
-            @type length: C{int}
-            @return: None when check successful
-            @raise ValueError: check failed
+            Проверяет длину значения
+            @param value: значение для проверки
+            @type value: C {str}
+            @param length: проверка длины 
+            @type length: C {int}
+            @return: ничего при успешной проверке
+            @raise ValueError: проверка не удалась
             """
             _length = len(value)
             if _length != length:
@@ -1343,11 +1342,11 @@ class Application(QWidget):
 
         def check_positive(self, value, strict=False):
             """
-            Checks if variable is positive
-            @param value: value to check
+            Проверяет, положительна ли переменная
+            @param value: значение для проверки
             @type value: C{integer types}, C{float} or C{Decimal}
-            @return: None when check successful
-            @raise ValueError: check failed
+            @return: ничего при успешной проверке
+            @raise ValueError: проверка не удалась
             """
             if not strict and value < 0:
                 raise ValueError("Value must be positive or zero, not %s" % str(value))
@@ -1357,16 +1356,16 @@ class Application(QWidget):
 
         def split_values(self, ustring, sep=u','):
             """
-            Splits unicode string with separator C{sep},
-            but skips escaped separator.
+            Разделяет строку Unicode разделителем C {sep},
+            но пропускает экранированный разделитель.
             
-            @param ustring: string to split
+            @param ustring: строка для разделения
             @type ustring: C{unicode}
             
-            @param sep: separator (default to u',')
+            @param sep: separator (по умолчанию u ',')
             @type sep: C{unicode}
             
-            @return: tuple of splitted elements
+            @return: кортеж разделенных элементов
             """
             assert isinstance(ustring, str), "Должно быть unicode, not %s" % type(ustring)
             ustring_marked = ustring.replace(u'\,', u'\uffff')
@@ -1397,7 +1396,7 @@ class Application(QWidget):
             format = "%%0%dd" % min(len(remainder), signs)
             remainder = format % iremainder
             if len(remainder) > signs:
-                # при округлении цифр вида 0.998 ругаться
+                # при округлении цифр вида 0.998 ругается
                 raise ValueError("Signs overflow: I can't round only fractional part \
                                 of %s to fit %s in %d signs" % \
                                 (str(fvalue), orig_remainder, signs))
@@ -1438,7 +1437,6 @@ class Application(QWidget):
                 remainder = self._get_float_remainder(amount,typeindf, 2)
                 iremainder = int(remainder)
                 if iremainder != 0 or zero_for_kopeck:
-                    # если 3.1, то это 10 копеек, а не одна
                     if iremainder < 10 and len(remainder) == 1:
                         iremainder *= 10
                     pts.append(self.sum_string(iremainder, 2,
@@ -1457,10 +1455,8 @@ class Application(QWidget):
                 signs = len(str(remainder)) - 1
                 pts.append(self.sum_string_ua(int(remainder), 2, FRACTIONS_UA[signs]))
             elif typeindf == True: #Ru
-                # преобразуем целую часть
                 pts.append(self.sum_string(int(amount), 2,
                                     (u"целая", u"целых", u"целых")))
-                # теперь то, что после запятой
                 remainder = self._get_float_remainder(amount,typeindf)
                 signs = len(str(remainder)) - 1
                 pts.append(self.sum_string(int(remainder), 2, FRACTIONS[signs]))
@@ -1532,15 +1528,11 @@ class Application(QWidget):
                     return u"ноль"
             into = u''
             tmp_val = amount
-            # единицы
             into, tmp_val = self._sum_string_fn_ua(into, tmp_val, gender, items)
-            # тысячи
             into, tmp_val = self._sum_string_fn_ua(into, tmp_val, FEMALE,
                                             (u"тысяча", u"тисячі", u"тысяч"))
-            # миллионы
             into, tmp_val = self._sum_string_fn_ua(into, tmp_val, MALE,
                                             (u"мільйон", u"мільйона", u"мільйонів"))
-            # миллиарды
             into, tmp_val = self._sum_string_fn_ua(into, tmp_val, MALE,
                                             (u"мільярд", u"мільярда", u"мільярдів"))
             if tmp_val == 0:
@@ -1598,31 +1590,22 @@ class Application(QWidget):
             rest = tmp_val % 1000
             tmp_val = tmp_val // 1000
             if rest == 0:
-                # последние три знака нулевые
                 if into == u"":
                     into = u"%s " % five_items
                 return into, tmp_val
-            # начинаем подсчет с rest
             end_word = five_items
-            # сотни
             words.append(HUNDREDS_UA[rest // 100])
-            # десятки
             rest = rest % 100
             rest1 = rest // 10
-            # особый случай -- tens=1
             tens = rest1 == 1 and TENS_UA[rest] or TENS_UA[rest1]
             words.append(tens)
-            # единицы
             if rest1 < 1 or rest1 > 1:
                 amount = rest % 10
                 end_word = self.choose_plural(amount, items)
                 words.append(ONES_UA[amount][gender-1])
             words.append(end_word)
-            # добавляем то, что уже было
             words.append(into)
-            # убираем пустые подстроки
             words = filter(lambda x: len(x) > 0, words)
-            # склеиваем и отдаем
             return u" ".join(words).strip(), tmp_val
 
 
